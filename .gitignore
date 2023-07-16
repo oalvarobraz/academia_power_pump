@@ -1,0 +1,40 @@
+# Node.js dependencies
+node_modules/
+
+# Environment file
+.env
+
+# macOS system files
+.DS_Store
+
+# Logs
+logs/
+
+# Dependency lock files
+package-lock.json
+yarn.lock
+npm-shrinkwrap.json
+
+# VSCode settings
+.vscode/
+
+# Editor config
+.editorconfig
+
+# Jest cache
+.jest-cache/
+
+# Compiled output (if you are using Babel)
+/dist/
+
+# Coverage directory
+/coverage/
+
+# Configuration files (if you store them in the root directory)
+config.js
+
+# Ignore your local environment
+.env.local
+
+# Ignore your production environment
+.env.prod
