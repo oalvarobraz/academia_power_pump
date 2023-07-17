@@ -24,6 +24,20 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/lessons/:id', async (req, res) => {
+  const lessonId = req.params.id;
+  try {
+    const lesson = await Lesson.getById(lessonId);
+    if (!lesson) {
+      res.status(404).json({ error: 'Lesson not found' });
+    } else {
+      res.json(lesson);
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.post('/lessons', async (req, res) => {
     const { title, description } = req.body;
     try {
