@@ -31,8 +31,7 @@
           },
           body: JSON.stringify({ admname, password })
         });
-        const cookies = document.cookie.split(';');
-        console.log('Cookies:', cookies);
+        
         if (response.ok) {
           const data = await response.json();
           console.log('Login Successful:', data.message);

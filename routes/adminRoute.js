@@ -53,20 +53,13 @@ router.post('/admin', async (req, res) => {
       
       const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
   
-      if(admname !== admlogin.admname) {
-        return res.status(401).json( { message: 'Invalid credentials' } );
-      }
-
-      const isPasswordValid = await bcrypt.compare(password, admlogin.password);
-
-      if(isPasswordValid) {
-        return res.status(401).json( { message: 'Invalid credentials' } );
+      if (admname !== admlogin.admname || password !== admlogin.password) {
+        return res.status(401).json({ message: 'Invalid credentials' });
       }
   
       const token = jwt.sign({ userId: admname }, jwtSecret);
       res.cookie('token', token, { httpOnly: true });
-      console.log('test');
-      res.redirect('/lessons');
+      res.redirect('/');
     } catch (error) {
       //console.log(error);
       res.status(500).json({ error: 'Internal server error' });
@@ -83,13 +76,14 @@ router.get('/lessons', async (req, res) => {
   }
 });
 
-router.post('/lessons', async (req, res) => {
+router.post('/lessons', authMiddleware, async (req, res) => {
   const { title, description } = req.body;
   try {
     const newLesson = new Lesson(title, description);
     const savedLesson = await newLesson.save();
     res.status(201).json(savedLesson);
   } catch (error) {
+    console.error('Error Saving Lesson:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

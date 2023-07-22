@@ -25,7 +25,7 @@
       const description = formData.get('description');
 
       try {
-        const token = process.env.JWT_SECRET; // Replace this with the actual JWT token obtained from the admin login
+        const token = getCookie('token');
         const response = await fetch('/lessons', {
           method: 'POST',
           headers: {
@@ -46,6 +46,13 @@
         console.log('Error:', error);
       }
     });
+
+    // Function to retrieve the token from the cookie
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
   </script>
 </body>
 </html>
