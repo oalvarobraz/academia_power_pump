@@ -1,10 +1,17 @@
-const express = require('express');
-const mongoose = require('mongoose');
 require('dotenv').config();
 
+const express = require('express');
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const Lesson = require('./models/Lesson');
 
 const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors());
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -12,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 const database = mongoose.connection;
 
-app.use(express.json());
+app.use('/', require('./routes/adminRoute'));
 
 // Define a route handler for the root URL
 app.get('/', async (req, res) => {
@@ -38,27 +45,17 @@ app.get('/lessons/:id', async (req, res) => {
   }
 });
 
-app.post('/lessons', async (req, res) => {
-    const { title, description } = req.body;
-    try {
-      const newLesson = new Lesson(title, description);
-      const savedLesson = await newLesson.save();
-      res.status(201).json(savedLesson);
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server Started at http://localhost:${PORT}`);
 });
 
-
-
-app.listen(3000, () => {
-    console.log('Server Started at http://localhost:3000');
-});
-
+// Database connection event handlers
 database.on('error', (error) => {
-    console.log('Database Connection Error:', error);
+  console.log('Database Connection Error:', error);
 });
 
 database.once('connected', () => {
-    console.log('Database Connected');
+  console.log('Database Connected');
 });
