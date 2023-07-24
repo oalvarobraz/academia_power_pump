@@ -36,7 +36,7 @@ const authMiddleware = (req, res, next ) => {
 */
 router.get('/admin', async (req, res) => {
   try {
-    const indexPath = path.join(__dirname, '..', 'views', 'index.html');
+    const indexPath = path.join(__dirname, '..', 'views', 'login.html');
     res.sendFile(indexPath);
   } catch (error) {
     console.log(error);
@@ -80,10 +80,27 @@ router.post('/lessons', authMiddleware, async (req, res) => {
   const { title, description } = req.body;
   try {
     const newLesson = new Lesson(title, description);
+    console.log(newLesson.title);
     const savedLesson = await newLesson.save();
     res.status(201).json(savedLesson);
+    res.redirect('/');
   } catch (error) {
     console.error('Error Saving Lesson:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete('/lessons/:id', authMiddleware, async (req, res) => {
+  const lessonId = req.params.id;
+  try {
+    const lesson = await Lesson.delete(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ error: 'Lesson not found' });
+    }
+    res.status(200).json({ message: 'Lesson deleted successfully' });
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error Deleting Lesson:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
