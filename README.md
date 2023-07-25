@@ -1,4 +1,4 @@
-# Acadenia Power Pump
+# Academia Power Pump
 
 ## Configuração
 
