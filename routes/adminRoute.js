@@ -8,9 +8,7 @@ const path = require('path');
 
 const jwtSecret = process.env.JWT_SECRET;
 
-/**
- * Check Login
-*/
+// Verifica se o login foi autorizado
 const authMiddleware = (req, res, next ) => {
   const token = req.cookies.token;
 
@@ -32,9 +30,7 @@ const authMiddleware = (req, res, next ) => {
   }
 }
 
-/**
- * Admin - Login Page
-*/
+// Carrega a página de login
 router.get('/admin', async (req, res) => {
   try {
     const indexPath = path.join(__dirname, '..', 'views', 'login.html');
@@ -45,14 +41,14 @@ router.get('/admin', async (req, res) => {
   }
 });
 
-/**
- * Admin - Check Login
-*/
+// Recebe os dados de login
 router.post('/admin', async (req, res) => {
     try {
       const { admname, password } = req.body;
       
       const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
+
+      // Verifica se os dados estão corretos
       if (admname !== admlogin.admname || password !== admlogin.password) {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
@@ -61,11 +57,11 @@ router.post('/admin', async (req, res) => {
       res.cookie('token', token, { httpOnly: true });
       res.redirect('/lessons');
     } catch (error) {
-      //console.log(error);
       res.status(500).json({ error: 'Internal server error' });
     }
 });
 
+// Carrega a página de postar aulas
 router.get('/lessons', authMiddleware, async (req, res) => {
   try {
     const indexPath = path.join(__dirname, '..', 'views', 'create_lesson.html');
@@ -76,6 +72,7 @@ router.get('/lessons', authMiddleware, async (req, res) => {
   }
 });
 
+// Posta novas aulas
 router.post('/lessons', authMiddleware, async (req, res) => {
   const { title, description } = req.body;
   try {
@@ -89,6 +86,7 @@ router.post('/lessons', authMiddleware, async (req, res) => {
   }
 });
 
+// Deleta aulas aulas a partir do id
 router.delete('/lessons/:id', authMiddleware, async (req, res) => {
   const lessonId = req.params.id;
   try {
@@ -103,6 +101,7 @@ router.delete('/lessons/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// Termina a seção de login do administrador
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
   res.redirect('/');
