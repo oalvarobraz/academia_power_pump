@@ -1,4 +1,4 @@
-# Acadenia Power Pump
+# Academia Power Pump
 
 ## Configuração
 
@@ -10,13 +10,14 @@ Antes de rodar o programa, é necessário configurar o arquivo `.env` com um `MO
    MONGO_URI=mongodb://localhost:27017/nome-do-banco
    ```
 você encontrará esse comando no site do MongoDB
+Defina também, `JWT_SECRET`, `ADM_USER`, `ADM_PASS`
 
 ## Instalação
 
 Para instalar as dependências necessárias, abra o terminal na pasta do projeto e execute o seguinte comando:
 
 ```
-npm install express mongoose nodemon dotenv
+npm install
 ```
 
 ## Execução

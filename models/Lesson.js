@@ -60,9 +60,9 @@ class Lesson {
     }
   }
 
-  async delete() {
+  static async delete(id) {
     try {
-      return await LessonModel.findByIdAndDelete(this._id);
+      return await LessonModel.findByIdAndDelete(id);
     } catch (error) {
       throw new Error('Error deleting lesson');
     }
