@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,44 +5,14 @@
 </head>
 <body>
   <h1>Admin Login</h1>
-  <form id="loginForm">
+  <form action="/admin" method="POST">
     <label for="admname">Username:</label>
     <input type="text" id="admname" name="admname" required><br>
-
+    
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required><br>
 
-    <button type="submit">Login</button>
+    <button type="submit" value="Login" class="btn">Login</button>
   </form>
-
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      const admname = formData.get('admname');
-      const password = formData.get('password');
-
-      try {
-        const response = await fetch('/admin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ admname, password })
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Login Successful:', data.message);
-          window.location.href = '/';
-        } else {
-          const errorData = await response.json();
-          console.log('Login Error:', errorData.message);
-        }
-      } catch (error) {
-        console.log('Error:', error);
-      }
-    });
-  </script>
 </body>
 </html>
