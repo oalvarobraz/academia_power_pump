@@ -1,12 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const Lesson = require('../models/Lesson');
+const path = require('path');
 
 // Carrega todas as aulas do banco de dados
 router.get('/', async (req, res) => {
     try {
       const lessons = await Lesson.getAll();
-      res.json(lessons);
+      // Extrair somente os campos que queremos (title, description, and personal)
+      const simplifiedLessons = lessons.map(lesson => {
+        return {
+          title: lesson.title,
+          description: lesson.description,
+          personal: lesson.personal,
+        };
+      });
+      res.render('main_page', { data: simplifiedLessons });
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
     }

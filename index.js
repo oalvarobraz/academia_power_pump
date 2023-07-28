@@ -3,12 +3,20 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser');
 const cors = require('cors');
+const ejs = require('ejs');
+const path = require('path');
 
 const app = express(); // Criação da instância do aplicativo do framework Express
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Configuração dos middlewares globais
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.use('/public', express.static(`${process.cwd()}/public`));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
@@ -30,7 +38,7 @@ app.listen(PORT, () => {
   console.log(`Server Started at http://localhost:${PORT}`);
 });
 
-// Database connection event handlers
+// Manipuladores de eventos de conexão de banco de dados
 database.on('error', (error) => {
   console.log('Database Connection Error:', error);
 });
