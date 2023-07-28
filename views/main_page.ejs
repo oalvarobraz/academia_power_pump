@@ -1,0 +1,28 @@
+<!-- index.ejs -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Display</title>
+    <link rel="stylesheet" href="/public/style_login.css"/>
+    <style>body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Altura mínima de 100% da altura da janela de visualização */
+        background: #ffffff
+    }</style>
+</head>
+<body>
+    <div id="json-container">
+        <% data.forEach(item => { %>
+            <div class="json-item">
+                <h2><%= item.title %></h2>
+                <p><%= item.description %></p>
+                <p>Treinador: <%= item.personal %></p>
+            </div>
+        <% }); %>
+    </div>
+</body>
+</html>

@@ -8,7 +8,7 @@ const lessonSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
-  },
+  }
 });
 
 const LessonModel = mongoose.model('Lesson', lessonSchema);
@@ -23,7 +23,7 @@ class Lesson {
     try {
       const newLesson = new LessonModel({
         title: this.title,
-        description: this.description,
+        description: this.description
       });
       await newLesson.save();
       return newLesson;

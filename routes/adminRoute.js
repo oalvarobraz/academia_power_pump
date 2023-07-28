@@ -4,7 +4,6 @@ const Lesson = require('../models/Lesson');
 const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -33,8 +32,7 @@ const authMiddleware = (req, res, next ) => {
 // Carrega a página de login
 router.get('/admin', async (req, res) => {
   try {
-    const indexPath = path.join(__dirname, '..', 'views', 'login.html');
-    res.sendFile(indexPath);
+    res.render('tela_login');
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -64,8 +62,7 @@ router.post('/admin', async (req, res) => {
 // Carrega a página de postar aulas
 router.get('/lessons', authMiddleware, async (req, res) => {
   try {
-    const indexPath = path.join(__dirname, '..', 'views', 'create_lesson.html');
-    res.sendFile(indexPath);
+    res.render('create_lesson');
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
