@@ -1,4 +1,3 @@
-
 class Admin {
     constructor(admname, password) {
         this.admname = admname;
