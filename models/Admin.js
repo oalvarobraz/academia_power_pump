@@ -1,8 +1,8 @@
 class Admin {
-    constructor(admname, password) {
-        this.admname = admname;
-        this.password = password;
-      }
+  constructor(username, password) {
+      this.username = username;
+      this.password = password;
+    }
 }
 
 module.exports = Admin;

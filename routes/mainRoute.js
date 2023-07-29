@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Lesson = require('../models/Lesson');
+const PersonalTrainer = require('../models/PersonalTrainer');
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
+const bcrypt = require('bcrypt');
 const jwtSecret = process.env.JWT_SECRET;
 
 // Carrega todas as aulas do banco de dados
@@ -49,23 +51,30 @@ router.get('/login', async (req, res) => {
 });
 
 // Recebe os dados de login
-// ToDo: Implementar os roles de usuario, se for admin tem a role admin e tem acesso a certas coisas
-// O que pode funcionar: podemos usar os cookies assim como no tolken, se for validado com a senha do .env recebe role de admin, se for validado como usuario e senha do banco de dados recebe role de personal. Nao possui seguranca direito tendo em vista que os cookies poderiam ser editados facilmente mas deve funcionar para o trabalho
 router.post('/login', async (req, res) => {
     try {
-      const { admname, password } = req.body;
-      
+      const { username, password } = req.body;
       const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
-
       // Verifica se os dados estão corretos
-      if (admname !== admlogin.admname || password !== admlogin.password) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-      }
-  
-      const token = jwt.sign({ userId: admname }, jwtSecret);
-      res.cookie('token', token, { httpOnly: true });
-      res.redirect('/lessons');
+      if (username === admlogin.username && password === admlogin.password) {
+        const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
+        res.cookie('token', token, { httpOnly: true });
+        res.redirect('/lessons');
+      } else {
+        const personal = await PersonalTrainer.getPersonalUser(username);
+        if(!personal) {
+          return res.status(401).json( { message: 'Invalid credentials' } );
+        }
+        const isPasswordValid = await bcrypt.compare(password, personal.password);
+        if(!isPasswordValid) {
+          return res.status(401).json( { message: 'Invalid credentials' } );
+        }
+        const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
+        res.cookie('token', token, { httpOnly: true });
+        res.redirect('/lessons');
+      }  
     } catch (error) {
+      //console.log(error);
       res.status(500).json({ error: 'Internal server error' });
     }
 });
