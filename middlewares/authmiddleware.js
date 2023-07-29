@@ -4,35 +4,62 @@ require("dotenv").config();
 const jwtSecret = process.env.JWT_SECRET;
 
 // Verifica se o login foi autorizado
-const authMiddleware = (req, res, next ) => {
-    const token = req.cookies.token;
-
-    // Verificar se esta logado
-    if (req.cookies.token === undefined) {
-        return res.status(401).json({
-            message: "You are not logged in",
-            status: "error",
-        });
-    }
-
-    if(!token) {
-        return res.status(401).json( { message: 'Unauthorized'} );
-    }
-  
-    try {
-        const decoded = jwt.verify(token, jwtSecret);
-  
-        if (decoded.userId !== process.env.ADM_USER) {
-            return res.status(403).json({ message: 'Access forbidden' });
+const authMiddleware = (allowedRoles) => {
+    return (req, res, next) => {
+        const token = req.cookies.token;
+        // Verificar se esta logado
+        if (req.cookies.token === undefined) {
+            return res.status(401).json({
+                message: "You are not logged in",
+                status: "error",
+            });
         }
-  
-        req.userId = decoded.userId;
-        next();
-    } catch(error) {
-        console.log(error);
-        res.status(401).json( { message: 'Unauthorized'} );
-    }
+        // inclui somente admin
+        if (allowedRoles.includes('admin') && !allowedRoles.includes('personal')) {
+            try {
+                const decoded = jwt.verify(token, jwtSecret);
+                if (decoded.userId !== process.env.ADM_USER) {
+                    return res.status(403).json({ message: 'Access forbidden' });
+                }
+                req.userId = decoded.userId;
+                req.userRole = 'admin';
+                next();
+            } catch(error) {
+                console.log(error);
+                res.status(401).json( { message: 'Unauthorized'} );
+            }
+        }
+        // inclui somente personal
+        if (!allowedRoles.includes('admin') && allowedRoles.includes('personal')) {
+            try {
+                const decoded = jwt.verify(token, jwtSecret);
+                if (decoded.role !== 'personal') {
+                    return res.status(403).json({ message: 'Access forbidden' });
+                }
+                req.userId = decoded.userId;
+                req.userRole = decoded.role;
+                next();
+            } catch(error) {
+                console.log(error);
+                res.status(401).json( { message: 'Unauthorized'} );
+            }
+        }
+        // inclui os dois
+        if (allowedRoles.includes('admin') && allowedRoles.includes('personal')) {
+            try {
+                const decoded = jwt.verify(token, jwtSecret);
+                if (decoded.role !== 'admin' && decoded.role !== 'personal') {
+                    return res.status(403).json({ message: 'Access forbidden' });
+                }
+                req.userId = decoded.userId;
+                req.userRole = decoded.role;
+                next();
+            } catch(error) {
+                console.log(error);
+                res.status(401).json( { message: 'Unauthorized'} );
+            }
+        }
+    }   
 }
-
 
 module.exports = authMiddleware;
