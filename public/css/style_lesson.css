@@ -54,19 +54,23 @@ form textarea {
 
 /* Define a formatação do botão dentro do formulário */
 form button {
-    display: block; /* Define que o botão será exibido em bloco (cada botão em uma linha separada) */
-    width: 100%; /* Define que o botão ocupará 100% da largura disponível */
-    padding: 10px; /* Define o espaçamento interno do botão */
-    background-color: #4CAF50; /* Define a cor de fundo do botão */
-    color: #fff; /* Define a cor do texto do botão */
-    border: none; /* Remove a borda do botão */
-    border-radius: 5px; /* Define o raio do arredondamento das bordas do botão */
-    cursor: pointer; /* Define o cursor do mouse como um ponteiro quando estiver sobre o botão */
+  width :100%;
+  height :45px;
+  background-color:#F8F10D;/* Cor de fundo amarela*/
+  border-color:black;/* Cor da borda preta*/
+  font-size :1.3em;/* Tamanho da fonte*/
+  color:black;/* Cor do texto preto*/
+  outline:none;/* Sem contorno*/
+  border-radius:6px;/* Bordas arredondadas*/
+  cursor:pointer;/* Cursor do mouse em forma de ponteiro*/
+  transition:.2s;/* Transição suave ao passar o mouse*/
 }
 
 /* Define a formatação do botão quando o cursor do mouse estiver sobre ele */
 form button:hover {
-    background-color: #45a049; /* Define a cor de fundo do botão quando o cursor estiver sobre ele */
+  background-color:black;/* Cor de fundo preta*/
+  color:white;/* Cor do texto branco*/
+  border-color:#F8F10D;/* Cor da borda amarela*/
 }
 
 /* Estilize o card-container para usar flexbox */
