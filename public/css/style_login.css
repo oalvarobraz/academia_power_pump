@@ -12,7 +12,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh; /* Altura mínima de 100% da altura da janela de visualização */
-    background: #060606 url("imgs/background.jpg") no-repeat center; /* Cor de fundo e imagem de fundo */
+    background: #060606 url("../imgs/background.jpg") no-repeat center; /* Cor de fundo e imagem de fundo */
 }
 
 /* Estiliza o elemento .card-login */

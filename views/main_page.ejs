@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Display</title>
     <link rel="stylesheet" href="/public/style_login.css"/>
-    <style>body {
+    <style>
+    body {
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh; /* Altura mínima de 100% da altura da janela de visualização */
-        background: #ffffff
-    }</style>
+        background: #ffffff;
+    }
+    </style>
 </head>
 <body>
     <div id="json-container">
@@ -20,7 +22,7 @@
             <div class="json-item">
                 <h2><%= item.title %></h2>
                 <p><%= item.description %></p>
-                <p>Treinador: <%= item.personal %></p>
+                <p>Treinador: <%= item.personal.name %></p>
             </div>
         <% }); %>
     </div>

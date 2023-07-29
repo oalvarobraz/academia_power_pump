@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Equipments</title>
+</head>
+
+<body>
+    <h1>Equipments</h1>
+
+
+    <h2>Add New Equipment</h2>
+    <form action="/equipments" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" required><br>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required><br>
+
+        <label for="quality">Quality:</label>
+        <input type="text" id="quality" name="quality" required><br>
+
+        <button type="submit">Add Equipment</button>
+    </form>
+</body>
+
+</html>

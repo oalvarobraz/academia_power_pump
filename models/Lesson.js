@@ -8,22 +8,29 @@ const lessonSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
-  }
+  },
+  personal: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Personal',
+    required: true,
+  },
 });
 
 const LessonModel = mongoose.model('Lesson', lessonSchema);
 
 class Lesson {
-  constructor(title, description) {
+  constructor(title, description, personalId) {
     this.title = title;
     this.description = description;
+    this.personalId = personalId;
   }
 
   async save() {
     try {
       const newLesson = new LessonModel({
         title: this.title,
-        description: this.description
+        description: this.description,
+        personal: this.personalId,
       });
       await newLesson.save();
       return newLesson;
@@ -34,7 +41,7 @@ class Lesson {
 
   static async getAll() {
     try {
-      return await LessonModel.find();
+      return await LessonModel.find().populate('personal', 'name');
     } catch (error) {
       throw new Error('Error fetching lessons');
     }

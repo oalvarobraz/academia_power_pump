@@ -1,68 +1,28 @@
 const express = require('express');
 const router = express.Router();
 const Lesson = require('../models/Lesson');
-const Admin = require('../models/Admin');
+const Equipment = require('../models/Equipment');
+const authMiddleware = require('../middlewares/authmiddleware');
+const PersonalTrainer = require('../models/PersonalTrainer');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
-const jwtSecret = process.env.JWT_SECRET;
-
-// Verifica se o login foi autorizado
-const authMiddleware = (req, res, next ) => {
-  const token = req.cookies.token;
-
-  if(!token) {
-    return res.status(401).json( { message: 'Unauthorized'} );
-  }
-
+// Carrega a dashboard
+router.get('/menu', authMiddleware, async (req, res) => {
   try {
-    const decoded = jwt.verify(token, jwtSecret);
-
-    if (decoded.userId !== process.env.ADM_USER) {
-      return res.status(403).json({ message: 'Access forbidden' });
-    }
-
-    req.userId = decoded.userId;
-    next();
-  } catch(error) {
-    res.status(401).json( { message: 'Unauthorized'} );
-  }
-}
-
-// Carrega a página de login
-router.get('/admin', async (req, res) => {
-  try {
-    res.render('tela_login');
+    const personals = await PersonalTrainer.getAllPersonals();
+    res.render('dashboard', { data: personals });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// Recebe os dados de login
-router.post('/admin', async (req, res) => {
-    try {
-      const { admname, password } = req.body;
-      
-      const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
-
-      // Verifica se os dados estão corretos
-      if (admname !== admlogin.admname || password !== admlogin.password) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-      }
-  
-      const token = jwt.sign({ userId: admname }, jwtSecret);
-      res.cookie('token', token, { httpOnly: true });
-      res.redirect('/lessons');
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
-});
 
 // Carrega a página de postar aulas
 router.get('/lessons', authMiddleware, async (req, res) => {
   try {
-    res.render('create_lesson');
+    const personals = await PersonalTrainer.getAllPersonals();
+    res.render('create_lesson', { data: personals });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -71,11 +31,16 @@ router.get('/lessons', authMiddleware, async (req, res) => {
 
 // Posta novas aulas
 router.post('/lessons', authMiddleware, async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, personalId } = req.body;
   try {
-    const newLesson = new Lesson(title, description);
+    const personalTrainer = await PersonalTrainer.getPersonalById(personalId);
+
+    if (!personalTrainer) {
+      return res.status(404).json({ error: 'Personal trainer not found' });
+    }
+
+    const newLesson = new Lesson(title, description, personalTrainer._id);
     await newLesson.save();
-    // res.status(201).json(savedLesson);
     res.redirect('/');
   } catch (error) {
     console.error('Error Saving Lesson:', error);
@@ -98,10 +63,108 @@ router.delete('/lessons/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Termina a seção de login do administrador
-router.get('/logout', (req, res) => {
-  res.clearCookie('token');
-  res.redirect('/');
+// Carrega todos os personals do banco de dados
+router.get('/personals', authMiddleware, async (req, res) => {
+  try {
+    res.render('personals');
+    const personals = await PersonalTrainer.getAllPersonals();
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Posta novos personal trainers
+router.post('/personals', authMiddleware, async (req, res) => {
+  const { age, name, username, password } = req.body;
+  //const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    const newPersonal = new PersonalTrainer(name, age, username, password);
+    await newPersonal.createPersonal();
+    res.status(201).json({message: 'Personal Created'});
+  } catch (error) {
+    console.error('Error Saving Personal:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Carrega a página de equipamentos
+router.get('/equipments', authMiddleware, async (req, res) => {
+  try {
+    res.render('equipments');
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+// listar todos os equipamentos
+router.get('/equipments', authMiddleware, async (req, res) => {
+  try {
+    const equipments = await Equipment.find();
+    res.json(equipments);
+  } catch (error) {
+    console.error('Error fetching equipments:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Posta um novo equipamento
+router.post('/equipments', authMiddleware, async (req, res) => {
+  const { name, description, quantity, quality } = req.body;
+  try {
+    const newEquipment = new Equipment(name, description, quantity, quality);
+    await newEquipment.saveEquipment();
+    res.status(201).json(newEquipment);
+  } catch (error) {
+    console.error('Error creating equipment:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Atualizar um equipamento existente
+router.put('/equipments/:id', authMiddleware, async (req, res) => {
+  const equipmentId = req.params.id;
+  const { name, description, quantity } = req.body;
+  try {
+    const updatedEquipment = await Equipment.findByIdAndUpdate(
+      equipmentId,
+      {
+        name,
+        description,
+        quantity,
+      },
+      { new: true }
+    );
+
+    if (!updatedEquipment) {
+      return res.status(404).json({ error: 'Equipment not found' });
+    }
+
+    res.json(updatedEquipment);
+  } catch (error) {
+    console.error('Error updating equipment:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Excluir um equipamento
+router.delete('/equipments/:id', authMiddleware, async (req, res) => {
+  const equipmentId = req.params.id;
+  try {
+    const deletedEquipment = await Equipment.findByIdAndDelete(equipmentId);
+
+    if (!deletedEquipment) {
+      return res.status(404).json({ error: 'Equipment not found' });
+    }
+
+    res.json(deletedEquipment);
+  } catch (error) {
+    console.error('Error deleting equipment:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 module.exports = router;
