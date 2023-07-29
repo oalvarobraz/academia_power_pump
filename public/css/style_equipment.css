@@ -73,72 +73,9 @@ form button:hover {
   border-color:#F8F10D;/* Cor da borda amarela*/
 }
 
-/* Estilize o card-container para usar flexbox */
-.card-container {
+
+.card {
     display: flex;
     margin-left: 55px;
     justify-content: space-between;
-  }
-  
-
-  /* Estilize a div child */
-  .child {
-    flex: 1; /* Faz com que cada div child ocupe uma quantidade igual de espaço */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 10px;
-    background-color: #0F0F0F;
-  }
-  
-  .card-input-lesson {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .card-personal {
-    max-height: 500px;
-    overflow-y: auto;
 }
-
-/* Estilizando a barra de rolagem */
-.card-personal::-webkit-scrollbar {
-  width: 10px; /* Largura da barra de rolagem */
-}
-
-/* Estilizando o thumb (a alça) da barra de rolagem */
-.card-personal::-webkit-scrollbar-thumb {
-  background-color: #888; /* Cor do thumb */
-  border-radius: 5px; /* Raio do arredondamento do thumb */
-}
-
-/* Estilizando a parte da barra de rolagem que não é o thumb */
-.card-personal::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* Cor da parte da barra de rolagem que não é o thumb */
-  border-radius: 5px; /* Raio do arredondamento da parte da barra de rolagem que não é o thumb */
-}
-
-
-  /* Estilize a div com a classe json-item dentro do json-container */
-  #json-container .json-item {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 5px;
-  }
-/* Define a formatação de um item JSON dentro do contêiner */
-.json-item {
-    cursor: pointer; 
-    background-color: #f9f9f9; /* Define a cor de fundo do item JSON */
-    border: 1px solid #ccc; /* Define uma borda de 1px sólida de cor cinza (#ccc) para o item JSON */
-    border-radius: 5px; /* Define o raio do arredondamento das bordas do item JSON */
-    padding: 10px; /* Define o espaçamento interno do item JSON */
-    margin-bottom: 10px; /* Define o espaçamento inferior do item JSON */
-}
-
-.json-item:hover {
-  background-color: #F8F10D;
-  color: #0F0F0F;
-}
-

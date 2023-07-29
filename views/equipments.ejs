@@ -4,16 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Equipments</title>
-    <style>
-        header {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif; /* Define a família de fontes a ser usada */
-            position: fixed; /* Define que o cabeçalho ficará fixo no topo da página */
-            top: 0;
-            left: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="/public/css/style_equipment.css">
 </head>
 
 <body>
@@ -24,23 +15,24 @@
 
     <h1>Equipments</h1>
 
-
     <h2>Add New Equipment</h2>
-    <form action="/equipments" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+    <div class="card">
+        <form action="/equipments" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br>
 
-        <label for="description">Description:</label>
-        <input type="text" id="description" name="description" required><br>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required><br>
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" required><br>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" required><br>
 
-        <label for="quality">Quality:</label>
-        <input type="text" id="quality" name="quality" required><br>
+            <label for="quality">Quality:</label>
+            <input type="text" id="quality" name="quality" required><br>
 
-        <button type="submit">Add Equipment</button>
-    </form>
+            <button type="submit">Add Equipment</button>
+        </form>
+    </div>
 </body>
 
 </html>

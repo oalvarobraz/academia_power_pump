@@ -17,4 +17,4 @@ function toggleNav() {
     } else {
       navLinks.forEach(link => link.style.fontSize = 'small');
     }
-  }
+  };
