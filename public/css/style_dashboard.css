@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #1a1a1a;
+    background: #1a1a1a;
     color: #fff;
     font-family: Arial, sans-serif;
 }
@@ -16,9 +16,10 @@ header {
 }
   
 .dashboard {
+    background: transparent;
     max-width: 1200px;
     margin: 20px auto;
-    background-color: #1a1a1a;
+    backdrop-filter: blur(40px);
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -42,3 +43,7 @@ header {
     border-radius: 10px;
 }
   
+
+h1 {
+    color: #F8F10D;
+}

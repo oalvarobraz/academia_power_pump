@@ -5,12 +5,23 @@ const router = express.Router();
 const Lesson = require('../models/Lesson');
 const Equipment = require('../models/Equipment');
 const PersonalTrainer = require('../models/PersonalTrainer');
+const User = require('../models/Users');
 
 // Carrega a página de postar aulas
 router.get('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     const personals = await PersonalTrainer.getAllPersonals();
     res.render('create_lesson', { data: personals });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req, res) => {
+  try {
+    res.render('dashboard');
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -150,6 +161,19 @@ router.delete('/equipments/:id', authMiddleware, async (req, res) => {
   } catch (error) {
     console.error('Error deleting equipment:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Posta um novo equipamento
+router.post('/users', authMiddleware(['admin']), async (req, res) => {
+  const { name, email, cpf, age, sex } = req.body;
+  try {
+    const newUser = new Users(name, email, cpf, age, sex);
+    await newUser.createUser();
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
