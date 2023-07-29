@@ -97,6 +97,14 @@ class PersonalTrainer {
     }
   }
 
+  static async getPersonalUser(username) {
+    try {
+      return await PersonalModel.findOne({username});
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   static async updatePersonal(personalId, updatedData) {
     try {
       const updatedPersonal = await PersonalModel.findByIdAndUpdate(personalId, updatedData, {

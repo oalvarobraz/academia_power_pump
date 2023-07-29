@@ -1,25 +1,13 @@
 const express = require('express');
+const authMiddleware = require('../middlewares/authmiddleware');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 const Lesson = require('../models/Lesson');
 const Equipment = require('../models/Equipment');
-const authMiddleware = require('../middlewares/authmiddleware');
 const PersonalTrainer = require('../models/PersonalTrainer');
-const bcrypt = require('bcrypt');
-
-// Carrega a dashboard
-router.get('/menu', authMiddleware, async (req, res) => {
-  try {
-    const personals = await PersonalTrainer.getAllPersonals();
-    res.render('dashboard', { data: personals });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
 
 // Carrega a página de postar aulas
-router.get('/lessons', authMiddleware, async (req, res) => {
+router.get('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     const personals = await PersonalTrainer.getAllPersonals();
     res.render('create_lesson', { data: personals });
@@ -30,7 +18,7 @@ router.get('/lessons', authMiddleware, async (req, res) => {
 });
 
 // Posta novas aulas
-router.post('/lessons', authMiddleware, async (req, res) => {
+router.post('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
   const { title, description, personalId } = req.body;
   try {
     const personalTrainer = await PersonalTrainer.getPersonalById(personalId);
@@ -49,7 +37,7 @@ router.post('/lessons', authMiddleware, async (req, res) => {
 });
 
 // Deleta aulas aulas a partir do id
-router.delete('/lessons/:id', authMiddleware, async (req, res) => {
+router.delete('/lessons/:id', authMiddleware(['admin', 'personal']), async (req, res) => {
   const lessonId = req.params.id;
   try {
     const lesson = await Lesson.delete(lessonId);
@@ -64,22 +52,22 @@ router.delete('/lessons/:id', authMiddleware, async (req, res) => {
 });
 
 // Carrega todos os personals do banco de dados
-router.get('/personals', authMiddleware, async (req, res) => {
+router.get('/personals', authMiddleware(['admin']), async (req, res) => {
   try {
-    res.render('personals');
     const personals = await PersonalTrainer.getAllPersonals();
+    res.render('personals', { data: personals });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Posta novos personal trainers
-router.post('/personals', authMiddleware, async (req, res) => {
+router.post('/personals', authMiddleware(['admin']), async (req, res) => {
   const { age, name, username, password } = req.body;
-  //const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
-    const newPersonal = new PersonalTrainer(name, age, username, password);
+    const newPersonal = new PersonalTrainer(name, age, username, hashedPassword);
     await newPersonal.createPersonal();
     res.status(201).json({message: 'Personal Created'});
   } catch (error) {
@@ -89,7 +77,7 @@ router.post('/personals', authMiddleware, async (req, res) => {
 });
 
 // Carrega a página de equipamentos
-router.get('/equipments', authMiddleware, async (req, res) => {
+router.get('/equipments', authMiddleware(['admin']), async (req, res) => {
   try {
     res.render('equipments');
   } catch (error) {
@@ -98,10 +86,8 @@ router.get('/equipments', authMiddleware, async (req, res) => {
   }
 });
 
-
-
 // listar todos os equipamentos
-router.get('/equipments', authMiddleware, async (req, res) => {
+router.get('/equipments', authMiddleware(['admin']), async (req, res) => {
   try {
     const equipments = await Equipment.find();
     res.json(equipments);
@@ -112,7 +98,7 @@ router.get('/equipments', authMiddleware, async (req, res) => {
 });
 
 // Posta um novo equipamento
-router.post('/equipments', authMiddleware, async (req, res) => {
+router.post('/equipments', authMiddleware(['admin']), async (req, res) => {
   const { name, description, quantity, quality } = req.body;
   try {
     const newEquipment = new Equipment(name, description, quantity, quality);
@@ -125,7 +111,7 @@ router.post('/equipments', authMiddleware, async (req, res) => {
 });
 
 // Atualizar um equipamento existente
-router.put('/equipments/:id', authMiddleware, async (req, res) => {
+router.put('/equipments/:id', authMiddleware(['admin']), async (req, res) => {
   const equipmentId = req.params.id;
   const { name, description, quantity } = req.body;
   try {
