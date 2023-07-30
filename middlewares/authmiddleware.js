@@ -14,8 +14,8 @@ const authMiddleware = (allowedRoles) => {
                 status: "error",
             });
         }
-        // inclui somente admin
         if (allowedRoles.includes('admin') && !allowedRoles.includes('personal')) {
+            // inclui somente admin
             try {
                 const decoded = jwt.verify(token, jwtSecret);
                 if (decoded.userId !== process.env.ADM_USER) {
@@ -28,9 +28,8 @@ const authMiddleware = (allowedRoles) => {
                 console.log(error);
                 res.status(401).json( { message: 'Unauthorized'} );
             }
-        }
-        // inclui somente personal
-        if (!allowedRoles.includes('admin') && allowedRoles.includes('personal')) {
+        } else if (!allowedRoles.includes('admin') && allowedRoles.includes('personal')) {
+            // inclui somente personal
             try {
                 const decoded = jwt.verify(token, jwtSecret);
                 if (decoded.role !== 'personal') {
@@ -43,9 +42,7 @@ const authMiddleware = (allowedRoles) => {
                 console.log(error);
                 res.status(401).json( { message: 'Unauthorized'} );
             }
-        }
-        // inclui os dois
-        if (allowedRoles.includes('admin') && allowedRoles.includes('personal')) {
+        } else if (allowedRoles.includes('admin') && allowedRoles.includes('personal')) {
             try {
                 const decoded = jwt.verify(token, jwtSecret);
                 if (decoded.role !== 'admin' && decoded.role !== 'personal') {

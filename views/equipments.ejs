@@ -3,29 +3,58 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Equipments</title>
+    <title>Equipamentos</title>
+    <link rel="stylesheet" href="/public/css/style_equipment.css">
 </head>
 
 <body>
-    <h1>Equipments</h1>
 
+    <header>
+        <%- include('partials/header.ejs') %>
+    </header>
 
-    <h2>Add New Equipment</h2>
-    <form action="/equipments" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+    <main>
+        <h1>Equipments</h1>
 
-        <label for="description">Description:</label>
-        <input type="text" id="description" name="description" required><br>
+        <h2>Adicionar Novo Equipamento</h2>
+        <div class="card">
+            <form action="/equipments" method="POST">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" required><br>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description" required>
+                </div>
 
-        <label for="quality">Quality:</label>
-        <input type="text" id="quality" name="quality" required><br>
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" required min="0">
+                </div>
 
-        <button type="submit">Add Equipment</button>
-    </form>
+                <div class="form-group">
+                    <label for="quality">Quality:</label>
+                    <select id="quality" name="quality" required>
+                        <option value="optimal">Ótimo Estado</option>
+                        <option value="good">Bom Estado</option>
+                        <option value="defective">Defeituoso</option>
+                    </select>
+                </div>
+
+                <button type="submit">Add Equipment</button>
+            </form>
+        </div>
+    </main>
+    <script>
+        // Impede que números negativos sejam digitados no campo "Quantity"
+        document.getElementById('quantity').addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
+            }
+        });
+    </script>
 </body>
 
 </html>

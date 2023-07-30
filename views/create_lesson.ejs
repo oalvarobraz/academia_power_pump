@@ -22,6 +22,14 @@
         <label for="description">Description:</label>
         <textarea id="description" name="description" rows="4" required></textarea><br>
     
+        <div class="time-hours">
+          <label for="data">Date:</label>
+          <input type="date" id="data" name="data" required><br>
+
+          <label for="time">Time:</label>
+          <input type="time" id="time" name="time" required><br>
+        </div>
+
         <label for="personalId">Personal ID:</label>
         <input type="text" id="personalId" name="personalId" required><br>
     
@@ -32,7 +40,7 @@
     <div class="child">
       <h2>Personal trainers</h2>
       <div class="card-personal">
-      <div id="json-container">
+      <div id="json-container"">
         <% data.forEach(item => { %>
           <div class="json-item" data-id="<%= item.id %>">
             <p><strong>ID:</strong> <%= item.id %></p>

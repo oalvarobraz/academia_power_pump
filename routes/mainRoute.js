@@ -7,6 +7,23 @@ const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
 const jwtSecret = process.env.JWT_SECRET;
 
+// Função para formatar a data no formato "dd/mm/aaaa"
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Função para formatar o tempo no formato "hh:mm"
+function formatTime(timeString) {
+  const time = new Date(`1970-01-01T${timeString}`);
+  const hours = time.getHours().toString().padStart(2, '0');
+  const minutes = time.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
 // Carrega todas as aulas do banco de dados
 router.get('/', async (req, res) => {
     try {
@@ -16,6 +33,8 @@ router.get('/', async (req, res) => {
         return {
           title: lesson.title,
           description: lesson.description,
+          data: formatDate(lesson.data),
+          time: formatTime(lesson.time),
           personal: lesson.personal,
         };
       });
@@ -59,7 +78,7 @@ router.post('/login', async (req, res) => {
       if (username === admlogin.username && password === admlogin.password) {
         const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
         res.cookie('token', token, { httpOnly: true });
-        res.redirect('/lessons');
+        res.redirect('/dashboard/home');
       } else {
         const personal = await PersonalTrainer.getPersonalUser(username);
         if(!personal) {
@@ -71,7 +90,7 @@ router.post('/login', async (req, res) => {
         }
         const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
         res.cookie('token', token, { httpOnly: true });
-        res.redirect('/lessons');
+        res.redirect('/dashboard/home');
       }  
     } catch (error) {
       //console.log(error);
@@ -82,7 +101,7 @@ router.post('/login', async (req, res) => {
 // Termina a seção de login do administrador
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
-  res.redirect('/');
+  res.redirect('/login');
 });
 
 module.exports = router;

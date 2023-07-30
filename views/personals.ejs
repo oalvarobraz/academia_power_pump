@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Add New Personal</title>
+    <style>
+        header {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif; /* Define a família de fontes a ser usada */
+            position: fixed; /* Define que o cabeçalho ficará fixo no topo da página */
+            top: 0;
+            left: 0;
+        }
+    </style>
 </head>
 <body>
+
+    <header>
+        <%- include('partials/header.ejs') %>
+    </header>
+
     <h1>Add New Personal Trainer</h1>
     <form method="POST" action="/personals">
         <label for="name">Name:</label>

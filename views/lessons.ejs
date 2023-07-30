@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lessons</title>
+  <link rel="stylesheet" href="/public/css/style_lesson_page.css">
+</head>
+
+<body>
+  <header>
+    <%- include('partials/header.ejs') %>
+  </header>
+  
+  <div class="container">
+    <h1>Aulas do Dia</h1>
+    <div class="lesson-container">
+        <div class="lessons-list">
+          <% data.forEach(lesson => { %>
+            <div class="lesson-item lesson-card">
+              <p><strong>Título:</strong> <%= lesson.title %></p>
+              <p><strong>Descrição:</strong> <%= lesson.description %></p>
+              <p><strong>Data:</strong> <%= lesson.data %></p>
+              <p><strong>Hora:</strong> <%= lesson.time %></p>
+              <p><strong>Personal Trainer:</strong> <%= lesson.personal.name %></p>
+              <div class="lesson-actions action-buttons">
+                <button href="/lessons/edit/<%= lesson._id %>" class="button">Editar</button>
+                <button class="delete-button" data-lesson-id="<%= lesson._id %>" >Deletar</button>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+        
+      </div>
+      <a href="/create_lessons" class="button">Criar Aula</a>
+  </div>
+  <div class="div-button">
+    
+  </div>
+  
+
+  <script src="/public/js/script.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+<script>
+  const deleteButtons = document.querySelectorAll('.delete-button');
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const lessonId = button.dataset.lessonId;
+      try {
+        const response = await fetch(`/lessons/delete/${lessonId}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error);
+        }
+        location.reload();
+      } catch (error) {
+        console.error('Error Deleting Lesson:', error);
+      }
+    });
+  });
+</script>
+</html>
