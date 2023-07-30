@@ -5,7 +5,7 @@ const router = express.Router();
 const Lesson = require('../models/Lesson');
 const Equipment = require('../models/Equipment');
 const PersonalTrainer = require('../models/PersonalTrainer');
-const User = require('../models/Users');
+const Client = require('../models/Client');
 
 // Carrega a página de postar aulas
 router.get('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
@@ -51,7 +51,7 @@ router.post('/lessons', authMiddleware(['admin', 'personal']), async (req, res) 
 
     const newLesson = new Lesson(title, description, data, time, personalTrainer._id);
     await newLesson.save();
-    res.redirect('/');
+    res.redirect('/lessons');
   } catch (error) {
     console.error('Error Saving Lesson:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -59,14 +59,14 @@ router.post('/lessons', authMiddleware(['admin', 'personal']), async (req, res) 
 });
 
 // Deleta aulas aulas a partir do id
-router.delete('/lessons/:id', authMiddleware(['admin', 'personal']), async (req, res) => {
+router.delete('/lessons/delete/:id', authMiddleware(['admin', 'personal']), async (req, res) => {
   const lessonId = req.params.id;
   try {
     const lesson = await Lesson.delete(lessonId);
     if (!lesson) {
       return res.status(404).json({ error: 'Lesson not found' });
     }
-    res.redirect('/');
+    res.status(204).json({ message: 'Lesson deleted successfully' });
   } catch (error) {
     console.error('Error Deleting Lesson:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -175,16 +175,75 @@ router.delete('/equipments/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Posta um novo equipamento
+// Posta um novo ususario
 router.post('/users', authMiddleware(['admin']), async (req, res) => {
-  const { name, email, cpf, age, sex } = req.body;
+  const { name, email, cpf, age, sex, isPaid } = req.body;
   try {
-    const newUser = new Users(name, email, cpf, age, sex);
-    await newUser.createUser();
+    const newClient = new Client(name, email, cpf, age, sex, isPaid);
+    await newClient.createClient();
     res.status(201).json(newUser);
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Posta um novo cliente
+router.post('/clients', authMiddleware(['admin']), async (req, res) => {
+  const { name, email, cpf, age, sex, isPaid } = req.body;
+  try {
+    const newClient = new Client(name, email, cpf, age, sex, isPaid);
+    await newClient.createClient();
+    res.status(201).json(newClient);
+  } catch (error) {
+    console.error('Error creating client:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Atualizar um cliente existente
+router.put('/clients/:id', authMiddleware(['admin']), async (req, res) => {
+  const clientId = req.params.id;
+  const { name, email, cpf, age, sex, isPaid } = req.body;
+  try {
+    const updatedClient = await Client.findByIdAndUpdate(
+      clientId,
+      {
+        name,
+        email,
+        cpf,
+        age,
+        sex,
+        isPaid,
+      },
+      { new: true }
+    );
+
+    if (!updatedClient) {
+      return res.status(404).json({ error: 'Client not found' });
+    }
+
+    res.json(updatedClient);
+  } catch (error) {
+    console.error('Error updating client:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Excluir um cliente
+router.delete('/clients/:id', authMiddleware(['admin']), async (req, res) => {
+  const clientId = req.params.id;
+  try {
+    const deletedClient = await Client.findByIdAndDelete(clientId);
+
+    if (!deletedClient) {
+      return res.status(404).json({ error: 'Client not found' });
+    }
+
+    res.json(deletedClient);
+  } catch (error) {
+    console.error('Error deleting client:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

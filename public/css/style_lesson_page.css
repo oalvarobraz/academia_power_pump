@@ -21,7 +21,7 @@ a {
   }
   
   /* Define a formatação dos elementos de nível H2 */
-  h2 {
+  h1 {
     color: #F8F10D;
     text-align: center;
   }
@@ -96,8 +96,26 @@ a {
     color: #F8F10D;
     border: 1px solid #F8F10D;
   }
+
+  /* Define a formatação do botão de criar aula */
+  .delete-button {
+    background-color: #F7253A;
+    color: #0F0F0F;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+
+  }
   
-   
+  /* Define a formatação do botão de criar aula quando o cursor do mouse estiver sobre ele */
+  .delete-button:hover {
+    background-color: #0F0F0F;
+    color: #AB0011;
+    border: 1px solid #AB0011;
+  }
+  
   .lessons-list {
     max-height: 400px; /* Set a maximum height for the lessons container */
     overflow-y: auto; /* Add a scrollbar when the content exceeds the max height */

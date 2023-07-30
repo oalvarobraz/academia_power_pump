@@ -78,7 +78,7 @@ router.post('/login', async (req, res) => {
       if (username === admlogin.username && password === admlogin.password) {
         const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
         res.cookie('token', token, { httpOnly: true });
-        res.redirect('/lessons');
+        res.redirect('/dashboard/home');
       } else {
         const personal = await PersonalTrainer.getPersonalUser(username);
         if(!personal) {
@@ -90,7 +90,7 @@ router.post('/login', async (req, res) => {
         }
         const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
         res.cookie('token', token, { httpOnly: true });
-        res.redirect('/lessons');
+        res.redirect('/dashboard/home');
       }  
     } catch (error) {
       //console.log(error);
@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
 // Termina a seção de login do administrador
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
-  res.redirect('/');
+  res.redirect('/login');
 });
 
 module.exports = router;
