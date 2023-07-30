@@ -7,6 +7,23 @@ const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
 const jwtSecret = process.env.JWT_SECRET;
 
+// Função para formatar a data no formato "dd/mm/aaaa"
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Função para formatar o tempo no formato "hh:mm"
+function formatTime(timeString) {
+  const time = new Date(`1970-01-01T${timeString}`);
+  const hours = time.getHours().toString().padStart(2, '0');
+  const minutes = time.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
 // Carrega todas as aulas do banco de dados
 router.get('/', async (req, res) => {
     try {
@@ -16,6 +33,8 @@ router.get('/', async (req, res) => {
         return {
           title: lesson.title,
           description: lesson.description,
+          data: formatDate(lesson.data),
+          time: formatTime(lesson.time),
           personal: lesson.personal,
         };
       });

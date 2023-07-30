@@ -9,6 +9,14 @@ const lessonSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  data: {
+    type: Date,
+    required: true,
+  },
+  time: {
+    type: String,
+    required: true,
+  },
   personal: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Personal',
@@ -19,9 +27,11 @@ const lessonSchema = new mongoose.Schema({
 const LessonModel = mongoose.model('Lesson', lessonSchema);
 
 class Lesson {
-  constructor(title, description, personalId) {
+  constructor(title, description, data, time, personalId) {
     this.title = title;
     this.description = description;
+    this.data = data;
+    this.time = time;
     this.personalId = personalId;
   }
 
@@ -30,6 +40,8 @@ class Lesson {
       const newLesson = new LessonModel({
         title: this.title,
         description: this.description,
+        data: this.data,
+        time: this.time,
         personal: this.personalId,
       });
       await newLesson.save();
@@ -59,7 +71,11 @@ class Lesson {
     try {
       return await LessonModel.findByIdAndUpdate(
         this._id,
-        { title: this.title, description: this.description },
+        { title: this.title,
+         description: this.description,
+         data: this.data, 
+         time: this.time
+        },
         { new: true }
       );
     } catch (error) {

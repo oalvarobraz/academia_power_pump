@@ -10,6 +10,17 @@ const User = require('../models/Users');
 // Carrega a página de postar aulas
 router.get('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
+    const lessons = await Lesson.getAll();
+    res.render('lessons', { data: lessons });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Carrega a página de postar aulas
+router.get('/create_lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
+  try {
     const personals = await PersonalTrainer.getAllPersonals();
     res.render('create_lesson', { data: personals });
   } catch (error) {
@@ -30,7 +41,7 @@ router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req,
 
 // Posta novas aulas
 router.post('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
-  const { title, description, personalId } = req.body;
+  const { title, description, data, time, personalId } = req.body;
   try {
     const personalTrainer = await PersonalTrainer.getPersonalById(personalId);
 
@@ -38,7 +49,7 @@ router.post('/lessons', authMiddleware(['admin', 'personal']), async (req, res) 
       return res.status(404).json({ error: 'Personal trainer not found' });
     }
 
-    const newLesson = new Lesson(title, description, personalTrainer._id);
+    const newLesson = new Lesson(title, description, data, time, personalTrainer._id);
     await newLesson.save();
     res.redirect('/');
   } catch (error) {

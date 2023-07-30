@@ -81,6 +81,7 @@ form button:hover {
   }
   
 
+
   /* Estilize a div child */
   .child {
     flex: 1; /* Faz com que cada div child ocupe uma quantidade igual de espaço */
@@ -95,6 +96,7 @@ form button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+
   }
 
   .card-personal {
@@ -142,3 +144,18 @@ form button:hover {
   color: #0F0F0F;
 }
 
+.time-hours {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 10px;
+  justify-content: space-around;
+}
+
+.time-hours input {
+  border-radius: 5px;
+  border: 1px solid #ccc; /* Define uma borda de 1px sólida de cor cinza (#ccc) para o item JSON */
+}
+
+#createLessonForm {
+  background-color: #3B3B3B;
+}

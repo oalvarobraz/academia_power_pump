@@ -1,0 +1,125 @@
+/* Define a formatação geral do corpo da página */
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: #1a1a1a;
+    margin: 50px;
+  }
+  
+a {
+  text-decoration: none;
+}
+
+  /* Define a formatação do cabeçalho (header) da página */
+  header {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  /* Define a formatação dos elementos de nível H2 */
+  h2 {
+    color: #F8F10D;
+    text-align: center;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 55px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Define a formatação das aulas */
+  .lesson-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+  }
+  
+  /* Define a formatação de cada aula (cartão) */
+  .lesson-card {
+    flex-basis: calc(33.33% - 20px);
+    background-color: #0F0F0F;
+    color: #F8F10D;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilizando a barra de rolagem */
+  .lesson-card::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Estilizando o thumb (a alça) da barra de rolagem */
+  .lesson-card::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+  }
+  
+  /* Estilizando a parte da barra de rolagem que não é o thumb */
+  .lesson-card::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+  }
+  
+  /* Define a formatação dos botões de ação */
+  .lesson-card .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  
+  /* Define a formatação do botão de criar aula */
+  .button {
+    background-color: #F8F10D;
+    color: #0F0F0F;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+
+  }
+  
+  /* Define a formatação do botão de criar aula quando o cursor do mouse estiver sobre ele */
+  .button:hover {
+    background-color: #0F0F0F;
+    color: #F8F10D;
+    border: 1px solid #F8F10D;
+  }
+  
+   
+  .lessons-list {
+    max-height: 400px; /* Set a maximum height for the lessons container */
+    overflow-y: auto; /* Add a scrollbar when the content exceeds the max height */
+  }
+  
+  /* Estilizando a barra de rolagem */
+  .lessons-list::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Estilizando o thumb (a alça) da barra de rolagem */
+  .lessons-list::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+  }
+  
+  /* Estilizando a parte da barra de rolagem que não é o thumb */
+  .lessons-list::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+  }
+
+
+ 
+  
