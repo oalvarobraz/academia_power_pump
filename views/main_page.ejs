@@ -7,16 +7,29 @@
     <title>JSON Display</title>
     <link rel="stylesheet" href="/public/style_login.css"/>
     <style>
+        
+    header { 
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif; /* Define a família de fontes a ser usada */
+        position: fixed; /* Define que o cabeçalho ficará fixo no topo da página */
+        top: 0;
+        left: 0;
+    }
     body {
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh; /* Altura mínima de 100% da altura da janela de visualização */
-        background: #ffffff;
+        background: #1a1a1a;
     }
     </style>
 </head>
+
 <body>
+    <header>
+        <%- include('partials/header.ejs') %>
+    </header>
     <div id="json-container">
         <% data.forEach(item => { %>
             <div class="json-item">
