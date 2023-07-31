@@ -21,25 +21,30 @@ const ClientSchema = new mongoose.Schema({
   },
   sex: {
     type: String,
-    enum: ['Male', 'Female', 'Other'],
+    enum: ['Masculino', 'Feminino', 'Outro'],
     required: true,
   },
   isPaid: {
     type: Boolean,
     default: false,
   },
+  data: {
+    type: Date,
+    required: true,
+  },
 });
 
 const ClientModel = mongoose.model('Client', ClientSchema);
 
 class Client {
-  constructor(name, email, cpf, age, sex) {
+  constructor(name, email, cpf, age, sex, data) {
     this.name = name;
     this.email = email;
     this.cpf = cpf;
     this.age = age;
     this.sex = sex;
-    this.isPaid = false; // Default value is false, assuming the client has not paid initially
+    this.isPaid = false;
+    this.data = data;
   }
 
   // Getters
@@ -67,6 +72,10 @@ class Client {
     return this.isPaid;
   }
 
+  getData() {
+    return this.data;
+  }
+
   // Setters
   setName(name) {
     this.name = name;
@@ -92,6 +101,10 @@ class Client {
     this.isPaid = isPaid;
   }
 
+  setData(data) {
+    this.data = data;
+  }
+
   // CRUD operations
   async createClient() {
     try {
@@ -102,6 +115,7 @@ class Client {
         age: this.age,
         sex: this.sex,
         isPaid: this.isPaid,
+        data: this.data,
       });
       await newClient.save();
       return newClient;
