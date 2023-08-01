@@ -16,7 +16,7 @@ router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req,
   }
 });
 
-// Carrega a página de postar aulas
+// Carrega a página de aulas
 router.get('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     const lessons = await Lesson.getAll();
@@ -180,7 +180,7 @@ router.get('/clients', authMiddleware(['admin']), async (req, res) => {
     const clients = await Client.getAllClients();
     res.render('create_client', { data: clients });
   } catch (error) {
-    console.error('Error fetching equipments:', error);
+    console.error('Error fetching clients:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -210,6 +210,7 @@ router.post('/clients', authMiddleware(['admin']), async (req, res) => {
 });
 
 // Atualizar um cliente existente
+// ToDo: Atualizar essa função para relacionar com orietação a objetos
 router.put('/clients/:id', authMiddleware(['admin']), async (req, res) => {
   const clientId = req.params.id;
   const { name, email, cpf, age, sex, isPaid, data } = req.body;

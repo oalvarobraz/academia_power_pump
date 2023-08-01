@@ -37,13 +37,13 @@ const ClientSchema = new mongoose.Schema({
 const ClientModel = mongoose.model('Client', ClientSchema);
 
 class Client {
-  constructor(name, email, cpf, age, sex, data) {
+  constructor(name, email, cpf, age, sex, isPaid, data) {
     this.name = name;
     this.email = email;
     this.cpf = cpf;
     this.age = age;
     this.sex = sex;
-    this.isPaid = false;
+    this.isPaid = isPaid;
     this.data = data;
   }
 
