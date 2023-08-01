@@ -7,7 +7,16 @@ const Equipment = require('../models/Equipment');
 const PersonalTrainer = require('../models/PersonalTrainer');
 const Client = require('../models/Client');
 
-// Carrega a página de postar aulas
+router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req, res) => {
+  try {
+    res.render('dashboard');
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Carrega a página de aulas
 router.get('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     const lessons = await Lesson.getAll();
@@ -23,16 +32,6 @@ router.get('/create_lessons', authMiddleware(['admin', 'personal']), async (req,
   try {
     const personals = await PersonalTrainer.getAllPersonals();
     res.render('create_lesson', { data: personals });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-
-router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req, res) => {
-  try {
-    res.render('dashboard');
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -175,24 +174,33 @@ router.delete('/equipments/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Posta um novo ususario
-router.post('/users', authMiddleware(['admin']), async (req, res) => {
-  const { name, email, cpf, age, sex, isPaid } = req.body;
+// listar todos os clientes
+router.get('/clients', authMiddleware(['admin']), async (req, res) => {
   try {
-    const newClient = new Client(name, email, cpf, age, sex, isPaid);
-    await newClient.createClient();
-    res.status(201).json(newUser);
+    const clients = await Client.getAllClients();
+    res.render('create_client', { data: clients });
   } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Error fetching clients:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// listar todos os pagamentos pendentes
+router.get('/payments', authMiddleware(['admin', 'personal']), async (req, res) => {
+  try {
+    const clients = await Client.getAllClients();
+    res.render('payments', { data: clients });
+  } catch (error) {
+    console.error('Error fetching equipments:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Posta um novo cliente
 router.post('/clients', authMiddleware(['admin']), async (req, res) => {
-  const { name, email, cpf, age, sex, isPaid } = req.body;
+  const { name, email, cpf, age, sex, isPaid, data } = req.body;
   try {
-    const newClient = new Client(name, email, cpf, age, sex, isPaid);
+    const newClient = new Client(name, email, cpf, age, sex, isPaid, data);
     await newClient.createClient();
     res.status(201).json(newClient);
   } catch (error) {
@@ -202,9 +210,10 @@ router.post('/clients', authMiddleware(['admin']), async (req, res) => {
 });
 
 // Atualizar um cliente existente
+// ToDo: Atualizar essa função para relacionar com orietação a objetos
 router.put('/clients/:id', authMiddleware(['admin']), async (req, res) => {
   const clientId = req.params.id;
-  const { name, email, cpf, age, sex, isPaid } = req.body;
+  const { name, email, cpf, age, sex, isPaid, data } = req.body;
   try {
     const updatedClient = await Client.findByIdAndUpdate(
       clientId,
@@ -215,6 +224,7 @@ router.put('/clients/:id', authMiddleware(['admin']), async (req, res) => {
         age,
         sex,
         isPaid,
+        data,
       },
       { new: true }
     );
