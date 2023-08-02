@@ -7,6 +7,23 @@ const Equipment = require('../models/Equipment');
 const PersonalTrainer = require('../models/PersonalTrainer');
 const Client = require('../models/Client');
 
+// Função para formatar a data no formato "dd/mm/aaaa"
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Função para formatar o tempo no formato "hh:mm"
+function formatTime(timeString) {
+  const time = new Date(`1970-01-01T${timeString}`);
+  const hours = time.getHours().toString().padStart(2, '0');
+  const minutes = time.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
 router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     res.render('dashboard');
@@ -20,7 +37,17 @@ router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req,
 router.get('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     const lessons = await Lesson.getAll();
-    res.render('lessons', { data: lessons });
+    const simplifiedLessons = lessons.map(lesson => {
+      return {
+        _id: lesson._id,
+        title: lesson.title,
+        description: lesson.description,
+        data: formatDate(lesson.data),
+        time: formatTime(lesson.time),
+        personal: lesson.personal,
+      };
+    });
+    res.render('lessons', { data: simplifiedLessons });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -90,9 +117,24 @@ router.post('/personals', authMiddleware(['admin']), async (req, res) => {
   try {
     const newPersonal = new PersonalTrainer(name, age, username, hashedPassword);
     await newPersonal.createPersonal();
-    res.status(201).json({message: 'Personal Created'});
+    res.redirect('/personals');
   } catch (error) {
     console.error('Error Saving Personal:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Deleta personal a partir de um id
+router.delete('/personal/delete/:id', authMiddleware(['admin']), async (req, res) => {
+  const personalId = req.params.id;
+  try {
+    const personal = await PersonalTrainer.deletePersonal(personalId);
+    if (!personal) {
+      return res.status(404).json({ error: 'Personal not found' });
+    }
+    res.status(204).json({ message: 'Personal deleted successfully' });
+  } catch (error) {
+    console.error('Error Deleting Personal:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -100,23 +142,14 @@ router.post('/personals', authMiddleware(['admin']), async (req, res) => {
 // Carrega a página de equipamentos
 router.get('/equipments', authMiddleware(['admin']), async (req, res) => {
   try {
-    res.render('equipments');
+    const equipamentos = await Equipment.getAllEquipments();
+    res.render('equipments', { data: equipamentos });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// listar todos os equipamentos
-router.get('/equipments', authMiddleware(['admin']), async (req, res) => {
-  try {
-    const equipments = await Equipment.find();
-    res.json(equipments);
-  } catch (error) {
-    console.error('Error fetching equipments:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
 
 // Posta um novo equipamento
 router.post('/equipments', authMiddleware(['admin']), async (req, res) => {
@@ -158,16 +191,17 @@ router.put('/equipments/:id', authMiddleware(['admin']), async (req, res) => {
 });
 
 // Excluir um equipamento
-router.delete('/equipments/:id', authMiddleware, async (req, res) => {
+router.delete('/equipments/delete/:id', authMiddleware(['admin']), async (req, res) => {
   const equipmentId = req.params.id;
+  console.log(equipmentId);
   try {
-    const deletedEquipment = await Equipment.findByIdAndDelete(equipmentId);
+    const deletedEquipment = await Equipment.deleteEquipment(equipmentId);
 
     if (!deletedEquipment) {
       return res.status(404).json({ error: 'Equipment not found' });
     }
 
-    res.json(deletedEquipment);
+    res.status(204).json({ message: 'Equipment deleted successfully' });
   } catch (error) {
     console.error('Error deleting equipment:', error);
     res.status(500).json({ error: 'Internal server error' });

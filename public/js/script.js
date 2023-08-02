@@ -18,3 +18,4 @@ function toggleNav() {
       navLinks.forEach(link => link.style.fontSize = 'small');
     }
   };
+  
