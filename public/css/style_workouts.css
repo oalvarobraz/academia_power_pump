@@ -1,0 +1,29 @@
+/* style_workouts.css */
+body {
+    font-family: Arial, sans-serif;
+}
+
+
+.workout-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+}
+
+.workout-list {
+    margin-top: 20px;
+}
+
+.workout-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.workout-item p {
+    margin: 5px 0;
+}

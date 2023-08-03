@@ -23,10 +23,48 @@ const EquipmentModel = mongoose.model('Equipment', equipmentSchema);
 
 class Equipment {
   constructor(name, description, quantity, quality) {
-    this.name = name;
-    this.description = description;
-    this.quantity = quantity;
-    this.quality = quality;
+    this._name = name;
+    this._description = description;
+    this._quantity = quantity;
+    this._quality = quality;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(value) {
+    this._name = value;
+  }
+
+  get description() {
+    return this._description;
+  }
+
+  set description(value) {
+    this._description = value;
+  }
+
+  get quantity() {
+    return this._quantity;
+  }
+
+  set quantity(value) {
+    if (value < 0) {
+      throw new Error('Quantity must be a positive number');
+    }
+    this._quantity = value;
+  }
+
+  get quality() {
+    return this._quality;
+  }
+
+  set quality(value) {
+    if (!['optimal', 'good', 'defective'].includes(value)) {
+      throw new Error('Invalid quality value');
+    }
+    this._quality = value;
   }
 
   async saveEquipment() {
@@ -62,6 +100,7 @@ class Equipment {
 
   async updateEquipment() {
     try {
+      console.log('Função Update');
       return await EquipmentModel.findByIdAndUpdate(
         this._id,
         { name: this.name, description: this.description, quantity: this.quantity, quality: this.quality },

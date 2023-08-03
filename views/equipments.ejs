@@ -13,28 +13,25 @@
         <%- include('partials/header.ejs') %>
     </header>
 
-    <main>
-        <h1>Equipments</h1>
-
-        <h2>Adicionar Novo Equipamento</h2>
-        <div class="card">
-            <form action="/equipments" method="POST">
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Description:</label>
-                    <input type="text" id="description" name="description" required>
-                </div>
+    
+    <h1>Equipments</h1>
+    <div class="card-container">
+        <div class="child">
+            <h2>Adicionar Novo Equipamento</h2>
+            <div class="card">
+            <form id="addEquipment" action="/equipments" method="POST">
+                
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" required>
+                
 
                 <div class="form-group">
                     <label for="quantity">Quantity:</label>
                     <input type="number" id="quantity" name="quantity" required min="0">
-                </div>
 
-                <div class="form-group">
                     <label for="quality">Quality:</label>
                     <select id="quality" name="quality" required>
                         <option value="optimal">Ótimo Estado</option>
@@ -46,13 +43,64 @@
                 <button type="submit">Add Equipment</button>
             </form>
         </div>
-    </main>
+        </div>
+
+        <div class="child">
+            <h2>Atuais Equipamentos</h2>
+            <div class="equip-container">
+                <div class="equip-list">
+                    <% data.forEach(equipment => { %>
+                        <div class="equip-item equip-card">
+                            <p><strong>Nome:</strong> <%= equipment.name %></p>
+                            <p><strong>Descrição:</strong> <%= equipment.description %></p>
+                            <p><strong>Qunatidade:</strong> <%= equipment.quantity %></p>
+                            <p><strong>Qualidade:</strong> <%= equipment.quality %></p>
+                            <div class="equip-actions action-buttons">
+                                <button data-equipment-id="<%= equipment._id %>" class="button">Editar</button>
+                                <button class="delete-button" data-equipment-id="<%= equipment._id %>" >Deletar</button>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    
     <script>
         // Impede que números negativos sejam digitados no campo "Quantity"
         document.getElementById('quantity').addEventListener('input', function() {
             if (this.value < 0) {
                 this.value = 0;
             }
+        });
+
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+            const equipmentId = button.dataset.equipmentId;
+            console.log(equipmentId);
+            try {
+                const response = await fetch(`/equipments/delete/${equipmentId}`, {
+                method: 'DELETE'
+                });
+                if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error);
+                }
+                location.reload();
+            } catch (error) {
+                console.error('Error Deleting Lesson:', error);
+            }
+            });
+        });
+
+        const editButtons = document.querySelectorAll('.button'); // Supondo que você definiu corretamente a classe "button" nos botões de edição
+        editButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const equipmentId = button.dataset.equipmentId; // Supondo que você definiu corretamente o atributo "data-equipment-id" no botão de edição
+            window.location.href = `/equipments/edit/${equipmentId}`;
+        });
         });
     </script>
 </body>

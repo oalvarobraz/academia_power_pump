@@ -7,6 +7,23 @@ const Equipment = require('../models/Equipment');
 const PersonalTrainer = require('../models/PersonalTrainer');
 const Client = require('../models/Client');
 
+// Função para formatar a data no formato "dd/mm/aaaa"
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Função para formatar o tempo no formato "hh:mm"
+function formatTime(timeString) {
+  const time = new Date(`1970-01-01T${timeString}`);
+  const hours = time.getHours().toString().padStart(2, '0');
+  const minutes = time.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
 router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     res.render('dashboard');
@@ -20,7 +37,17 @@ router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req,
 router.get('/lessons', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     const lessons = await Lesson.getAll();
-    res.render('lessons', { data: lessons });
+    const simplifiedLessons = lessons.map(lesson => {
+      return {
+        _id: lesson._id,
+        title: lesson.title,
+        description: lesson.description,
+        data: formatDate(lesson.data),
+        time: formatTime(lesson.time),
+        personal: lesson.personal,
+      };
+    });
+    res.render('lessons', { data: simplifiedLessons });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -90,9 +117,24 @@ router.post('/personals', authMiddleware(['admin']), async (req, res) => {
   try {
     const newPersonal = new PersonalTrainer(name, age, username, hashedPassword);
     await newPersonal.createPersonal();
-    res.status(201).json({message: 'Personal Created'});
+    res.redirect('/personals');
   } catch (error) {
     console.error('Error Saving Personal:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Deleta personal a partir de um id
+router.delete('/personal/delete/:id', authMiddleware(['admin']), async (req, res) => {
+  const personalId = req.params.id;
+  try {
+    const personal = await PersonalTrainer.deletePersonal(personalId);
+    if (!personal) {
+      return res.status(404).json({ error: 'Personal not found' });
+    }
+    res.status(204).json({ message: 'Personal deleted successfully' });
+  } catch (error) {
+    console.error('Error Deleting Personal:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -100,23 +142,14 @@ router.post('/personals', authMiddleware(['admin']), async (req, res) => {
 // Carrega a página de equipamentos
 router.get('/equipments', authMiddleware(['admin']), async (req, res) => {
   try {
-    res.render('equipments');
+    const equipamentos = await Equipment.getAllEquipments();
+    res.render('equipments', { data: equipamentos });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// listar todos os equipamentos
-router.get('/equipments', authMiddleware(['admin']), async (req, res) => {
-  try {
-    const equipments = await Equipment.find();
-    res.json(equipments);
-  } catch (error) {
-    console.error('Error fetching equipments:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
 
 // Posta um novo equipamento
 router.post('/equipments', authMiddleware(['admin']), async (req, res) => {
@@ -124,27 +157,42 @@ router.post('/equipments', authMiddleware(['admin']), async (req, res) => {
   try {
     const newEquipment = new Equipment(name, description, quantity, quality);
     await newEquipment.saveEquipment();
-    res.status(201).json(newEquipment);
+    res.redirect('/equipments');
   } catch (error) {
     console.error('Error creating equipment:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Atualizar um equipamento existente
-router.put('/equipments/:id', authMiddleware(['admin']), async (req, res) => {
+// Rota para renderizar o formulário de edição do equipamento
+router.get('/equipments/edit/:id', authMiddleware(['admin']), async (req, res) => {
   const equipmentId = req.params.id;
-  const { name, description, quantity } = req.body;
+
   try {
-    const updatedEquipment = await Equipment.findByIdAndUpdate(
-      equipmentId,
-      {
-        name,
-        description,
-        quantity,
-      },
-      { new: true }
-    );
+    const equipment = await Equipment.getEquipmentById(equipmentId);
+    res.render('edit_equipment', { equipment });
+  } catch (error) {
+    console.error('Error fetching equipment:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Atualizar um equipamento existente
+router.put('/equipments/edit/:id', authMiddleware(['admin']), async (req, res) => {
+  const equipmentId = req.params.id;
+  const { name, description, quantity, quality } = req.body;
+  try {
+    const equipment = new Equipment(name, description, quantity, quality);
+
+    console.log(equipment);
+
+    equipment._id = equipmentId;
+
+    console.log(equipment);
+
+    const updatedEquipment = await equipment.updateEquipment();
+
+    console.log(updatedEquipment);
 
     if (!updatedEquipment) {
       return res.status(404).json({ error: 'Equipment not found' });
@@ -157,17 +205,19 @@ router.put('/equipments/:id', authMiddleware(['admin']), async (req, res) => {
   }
 });
 
+
 // Excluir um equipamento
-router.delete('/equipments/:id', authMiddleware, async (req, res) => {
+router.delete('/equipments/delete/:id', authMiddleware(['admin']), async (req, res) => {
   const equipmentId = req.params.id;
+  console.log(equipmentId);
   try {
-    const deletedEquipment = await Equipment.findByIdAndDelete(equipmentId);
+    const deletedEquipment = await Equipment.deleteEquipment(equipmentId);
 
     if (!deletedEquipment) {
       return res.status(404).json({ error: 'Equipment not found' });
     }
 
-    res.json(deletedEquipment);
+    res.status(204).json({ message: 'Equipment deleted successfully' });
   } catch (error) {
     console.error('Error deleting equipment:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -186,15 +236,30 @@ router.get('/clients', authMiddleware(['admin']), async (req, res) => {
 });
 
 // listar todos os pagamentos pendentes
-router.get('/payments', authMiddleware(['admin', 'personal']), async (req, res) => {
+router.get('/payments', authMiddleware(['admin']), async (req, res) => {
   try {
-    const clients = await Client.getAllClients();
-    res.render('payments', { data: clients });
+    const allClients = await Client.getAllClients();
+    const paidClients = allClients.filter(client => client.isPaid);
+    const unpaidClients = allClients.filter(client => !client.isPaid);
+
+    res.render('payments', { data: { paidClients, unpaidClients }});
   } catch (error) {
     console.error('Error fetching equipments:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+router.put('/clients/:id/mark-as-paid', authMiddleware(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Client.updatePaymentStatus(id);
+    res.status(200).json({ message: 'Client marked as paid.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 // Posta um novo cliente
 router.post('/clients', authMiddleware(['admin']), async (req, res) => {
@@ -202,6 +267,8 @@ router.post('/clients', authMiddleware(['admin']), async (req, res) => {
   try {
     const newClient = new Client(name, email, cpf, age, sex, isPaid, data);
     await newClient.createClient();
+    const allclients = Client.getAllClients();
+    console.log(allclients);
     res.status(201).json(newClient);
   } catch (error) {
     console.error('Error creating client:', error);
@@ -256,5 +323,20 @@ router.delete('/clients/:id', authMiddleware(['admin']), async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// Função para atualizar o status dos pagamentos a cada dia
+async function updatePaymentsStatusDaily() {
+  try {
+    await Client.updatePaymentStatus();
+  } catch (error) {
+    console.error('Error updating payment status:', error.message);
+  }
+}
+
+// Iniciar a atualização dos pagamentos ao iniciar o servidor
+updatePaymentsStatusDaily();
+
+// Atualizar os pagamentos diariamente (a cada 24 horas)
+setInterval(updatePaymentsStatusDaily, 24 * 60 * 60 * 1000);
 
 module.exports = router;

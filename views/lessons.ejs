@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
   <title>Lessons</title>
   <link rel="stylesheet" href="/public/css/style_lesson_page.css">
@@ -46,6 +46,7 @@
   deleteButtons.forEach(button => {
     button.addEventListener('click', async () => {
       const lessonId = button.dataset.lessonId;
+      console.log(lessonId);
       try {
         const response = await fetch(`/lessons/delete/${lessonId}`, {
           method: 'DELETE'
