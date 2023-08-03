@@ -32,6 +32,20 @@ const ClientSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  workouts: [{
+    date: {
+      type: Date,
+      required: true,
+    },
+    workoutName: {
+      type: String,
+      required: true,
+    },
+    workoutNumberofSeries: {
+      type: Number,
+      required: true,
+    }
+  }],
 });
 
 const ClientModel = mongoose.model('Client', ClientSchema);
@@ -105,6 +119,7 @@ class Client {
     this.data = data;
   }
 
+
   // CRUD operations
   async createClient() {
     try {
@@ -164,6 +179,20 @@ class Client {
     try {
       const deletedClient = await ClientModel.findByIdAndDelete(clientId);
       return deletedClient;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  
+  static async updatePaymentStatus(clientId) {
+    try {
+      const client = await ClientModel.findById(clientId);
+
+      if (!client) {
+        throw new Error('Client not found');
+      }
+      await ClientModel.findByIdAndUpdate(clientId, { isPaid: true, data: new Date() });
+      
     } catch (error) {
       throw new Error(error.message);
     }

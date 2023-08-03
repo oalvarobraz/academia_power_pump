@@ -3,33 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        header {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif; /* Define a família de fontes a ser usada */
-            position: fixed; /* Define que o cabeçalho ficará fixo no topo da página */
-            top: 0;
-            left: 0;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background: #1a1a1a;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-    </style>
+    <title>Pagamentos</title>
+    <link rel="stylesheet" href="/public/css/style_payments.css">
 </head>
 <body>
     <header>
         <%- include('partials/header.ejs') %>
     </header>
-
-    <main>
-        
-    </main>
+      
+    <div class="card-container">
+        <div class="child">
+          <h2>Clientes que pagaram</h2>
+          <div class="card-personal">
+            <% data.paidClients.forEach(client => { %>
+              <div class="json-item" data-id="<%= client._id %>">
+                <p><strong>ID:</strong> <%= client._id %></p>
+                <p><strong>Nome:</strong> <%= client.name %></p>
+                <p><strong>Idade:</strong> <%= client.age %></p>
+                <p><strong>E-mail:</strong> <%= client.email %></p>
+                <p><strong>CPF:</strong> <%= client.cpf %></p>
+                <p><strong>Sexo:</strong> <%= client.sex %></p>
+                <p><strong>Data:</strong> <%= new Date(client.data).toLocaleDateString('pt-BR') %></p>
+                <p><strong>Pagamento Efetuado:</strong> <%= client.isPaid ? 'Sim' : 'Não' %></p>
+                <button>Editar</button>
+            </div>
+            <% }); %>
+          </div>
+        </div>
+        <div class="child">
+          <h2>Clientes que ainda não pagaram</h2>
+          <div class="card-personal">
+            <% data.unpaidClients.forEach(client => { %>
+              <div class="json-item" data-id="<%= client._id %>">
+                <p><strong>ID:</strong> <%= client._id %></p>
+                <p><strong>Nome:</strong> <%= client.name %></p>
+                <p><strong>Idade:</strong> <%= client.age %></p>
+                <p><strong>E-mail:</strong> <%= client.email %></p>
+                <p><strong>CPF:</strong> <%= client.cpf %></p>
+                <p><strong>Sexo:</strong> <%= client.sex %></p>
+                <p><strong>Data:</strong> <%= new Date(client.data).toLocaleDateString('pt-BR') %></p>
+                <p><strong>Pagamento Efetuado:</strong> <%= client.isPaid ? 'Sim' : 'Não' %></p>
+                <% if (!client.isPaid) { %>
+                    <button onclick="markAsPaid('<%= client._id %>')">Marcar como Pago</button>
+                <% } %>
+                <button>Editar</button>
+                </div>
+            <% }); %>
+          </div>
+        </div>
+    </div>
+    
+    <script src="/public/js/script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
+<script>
+    async function markAsPaid(clientId) {
+      try {
+        const response = await fetch(`/clients/${clientId}/mark-as-paid`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          // If successful, reload the page to update the list
+          window.location.reload();
+        } else {
+          // Handle the error case if needed
+          console.error(data.message);
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+  </script>
 </html>

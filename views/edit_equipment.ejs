@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Equipment</title>
+</head>
+<body>
+  <h1>Edit Equipment</h1>
+  <form id="editEquipmentForm" action="/equipments/edit/<%= equipment._id %>" method="POST">
+    <input type="hidden" name="_method" value="PATCH">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" value="<%= equipment.name %>" required>
+    
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" value="<%= equipment.description %>" required>
+
+    <div class="form-group">
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" name="quantity" value="<%= equipment.quantity %>" required min="0">
+
+      <label for="quality">Quality:</label>
+      <select id="quality" name="quality" required>
+        <option value="optimal" <%= equipment.quality === 'optimal' ? 'selected' : '' %>>Ótimo Estado</option>
+        <option value="good" <%= equipment.quality === 'good' ? 'selected' : '' %>>Bom Estado</option>
+        <option value="defective" <%= equipment.quality === 'defective' ? 'selected' : '' %>>Defeituoso</option>
+      </select>
+    </div>
+
+    <button type="submit">Update Equipment</button>
+  </form>
+</body>
+
+</html>

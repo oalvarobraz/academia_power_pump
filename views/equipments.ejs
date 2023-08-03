@@ -56,7 +56,7 @@
                             <p><strong>Qunatidade:</strong> <%= equipment.quantity %></p>
                             <p><strong>Qualidade:</strong> <%= equipment.quality %></p>
                             <div class="equip-actions action-buttons">
-                                <button href="/equipments/edit/<%= equipment._id %>" class="button">Editar</button>
+                                <button data-equipment-id="<%= equipment._id %>" class="button">Editar</button>
                                 <button class="delete-button" data-equipment-id="<%= equipment._id %>" >Deletar</button>
                             </div>
                         </div>
@@ -93,6 +93,14 @@
                 console.error('Error Deleting Lesson:', error);
             }
             });
+        });
+
+        const editButtons = document.querySelectorAll('.button'); // Supondo que você definiu corretamente a classe "button" nos botões de edição
+        editButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const equipmentId = button.dataset.equipmentId; // Supondo que você definiu corretamente o atributo "data-equipment-id" no botão de edição
+            window.location.href = `/equipments/edit/${equipmentId}`;
+        });
         });
     </script>
 </body>

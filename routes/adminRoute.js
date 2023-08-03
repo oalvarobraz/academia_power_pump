@@ -157,27 +157,42 @@ router.post('/equipments', authMiddleware(['admin']), async (req, res) => {
   try {
     const newEquipment = new Equipment(name, description, quantity, quality);
     await newEquipment.saveEquipment();
-    res.status(201).json(newEquipment);
+    res.redirect('/equipments');
   } catch (error) {
     console.error('Error creating equipment:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Atualizar um equipamento existente
-router.put('/equipments/:id', authMiddleware(['admin']), async (req, res) => {
+// Rota para renderizar o formulário de edição do equipamento
+router.get('/equipments/edit/:id', authMiddleware(['admin']), async (req, res) => {
   const equipmentId = req.params.id;
-  const { name, description, quantity } = req.body;
+
   try {
-    const updatedEquipment = await Equipment.findByIdAndUpdate(
-      equipmentId,
-      {
-        name,
-        description,
-        quantity,
-      },
-      { new: true }
-    );
+    const equipment = await Equipment.getEquipmentById(equipmentId);
+    res.render('edit_equipment', { equipment });
+  } catch (error) {
+    console.error('Error fetching equipment:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Atualizar um equipamento existente
+router.put('/equipments/edit/:id', authMiddleware(['admin']), async (req, res) => {
+  const equipmentId = req.params.id;
+  const { name, description, quantity, quality } = req.body;
+  try {
+    const equipment = new Equipment(name, description, quantity, quality);
+
+    console.log(equipment);
+
+    equipment._id = equipmentId;
+
+    console.log(equipment);
+
+    const updatedEquipment = await equipment.updateEquipment();
+
+    console.log(updatedEquipment);
 
     if (!updatedEquipment) {
       return res.status(404).json({ error: 'Equipment not found' });
@@ -189,6 +204,7 @@ router.put('/equipments/:id', authMiddleware(['admin']), async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // Excluir um equipamento
 router.delete('/equipments/delete/:id', authMiddleware(['admin']), async (req, res) => {
@@ -220,15 +236,30 @@ router.get('/clients', authMiddleware(['admin']), async (req, res) => {
 });
 
 // listar todos os pagamentos pendentes
-router.get('/payments', authMiddleware(['admin', 'personal']), async (req, res) => {
+router.get('/payments', authMiddleware(['admin']), async (req, res) => {
   try {
-    const clients = await Client.getAllClients();
-    res.render('payments', { data: clients });
+    const allClients = await Client.getAllClients();
+    const paidClients = allClients.filter(client => client.isPaid);
+    const unpaidClients = allClients.filter(client => !client.isPaid);
+
+    res.render('payments', { data: { paidClients, unpaidClients }});
   } catch (error) {
     console.error('Error fetching equipments:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+router.put('/clients/:id/mark-as-paid', authMiddleware(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Client.updatePaymentStatus(id);
+    res.status(200).json({ message: 'Client marked as paid.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 // Posta um novo cliente
 router.post('/clients', authMiddleware(['admin']), async (req, res) => {
@@ -236,6 +267,8 @@ router.post('/clients', authMiddleware(['admin']), async (req, res) => {
   try {
     const newClient = new Client(name, email, cpf, age, sex, isPaid, data);
     await newClient.createClient();
+    const allclients = Client.getAllClients();
+    console.log(allclients);
     res.status(201).json(newClient);
   } catch (error) {
     console.error('Error creating client:', error);
@@ -290,5 +323,20 @@ router.delete('/clients/:id', authMiddleware(['admin']), async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// Função para atualizar o status dos pagamentos a cada dia
+async function updatePaymentsStatusDaily() {
+  try {
+    await Client.updatePaymentStatus();
+  } catch (error) {
+    console.error('Error updating payment status:', error.message);
+  }
+}
+
+// Iniciar a atualização dos pagamentos ao iniciar o servidor
+updatePaymentsStatusDaily();
+
+// Atualizar os pagamentos diariamente (a cada 24 horas)
+setInterval(updatePaymentsStatusDaily, 24 * 60 * 60 * 1000);
 
 module.exports = router;
