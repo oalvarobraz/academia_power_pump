@@ -197,6 +197,25 @@ class Client {
       throw new Error(error.message);
     }
   }
+
+  static async updateAllPaymentsStatus() {
+    try {
+      const clients = await ClientModel.find();
+      const currentDate = new Date();
+
+      for (const client of clients) {
+        const clientDate = new Date(client.data);
+        const oneMonthAgo = new Date(currentDate);
+        oneMonthAgo.setMonth(currentDate.getMonth() - 1);
+
+        if (clientDate < oneMonthAgo) {
+          await ClientModel.findByIdAndUpdate(client._id, { isPaid: false });
+        }
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = Client;

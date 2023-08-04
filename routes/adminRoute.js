@@ -327,16 +327,17 @@ router.delete('/clients/:id', authMiddleware(['admin']), async (req, res) => {
 // Função para atualizar o status dos pagamentos a cada dia
 async function updatePaymentsStatusDaily() {
   try {
-    await Client.updatePaymentStatus();
+    await Client.updateAllPaymentsStatus();
   } catch (error) {
-    console.error('Error updating payment status:', error.message);
+    throw new Error(error.message);
   }
 }
+
 
 // Iniciar a atualização dos pagamentos ao iniciar o servidor
 updatePaymentsStatusDaily();
 
 // Atualizar os pagamentos diariamente (a cada 24 horas)
-setInterval(updatePaymentsStatusDaily, 24 * 60 * 60 * 1000);
+setInterval(updatePaymentsStatusDaily, 60 * 1000);
 
 module.exports = router;
