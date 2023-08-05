@@ -105,12 +105,13 @@ class PersonalTrainer {
     }
   }
 
-  static async updatePersonal(personalId, updatedData) {
+  async updatePersonal() {
     try {
-      const updatedPersonal = await PersonalModel.findByIdAndUpdate(personalId, updatedData, {
-        new: true,
-      });
-      return updatedPersonal;
+      return await PersonalModel.findByIdAndUpdate(
+        this._id,
+        { name: this.name, age: this.age, username: this.username, password: this.password },
+        { new: true }
+      );
     } catch (error) {
       throw new Error(error.message);
     }

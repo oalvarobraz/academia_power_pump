@@ -32,20 +32,6 @@ const ClientSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  workouts: [{
-    date: {
-      type: Date,
-      required: true,
-    },
-    workoutName: {
-      type: String,
-      required: true,
-    },
-    workoutNumberofSeries: {
-      type: Number,
-      required: true,
-    }
-  }],
 });
 
 const ClientModel = mongoose.model('Client', ClientSchema);
@@ -164,12 +150,13 @@ class Client {
     }
   }
 
-  static async updateClient(clientId, updatedData) {
+  async updateClient() {
     try {
-      const updatedClient = await ClientModel.findByIdAndUpdate(clientId, updatedData, {
-        new: true,
-      });
-      return updatedClient;
+      return await ClientModel.findByIdAndUpdate(
+        this._id,
+        { name: this.name, email: this.email, cpf: this.cpf, sex: this.sex, isPaid: this.isPaid, date: this.date},
+        { new: true }
+      );
     } catch (error) {
       throw new Error(error.message);
     }
