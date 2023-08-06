@@ -4,7 +4,6 @@ body {
     min-height: 100vh; /* Define a altura mínima da área visível da página */
     background: #1a1a1a; /* Define a cor de fundo do corpo da página */
     margin: 50px; /* Define as margens externas do corpo da página */
-    overflow-y: hidden;
 }
 
 /* Define a formatação do cabeçalho (header) da página */
