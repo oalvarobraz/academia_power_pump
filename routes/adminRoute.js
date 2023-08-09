@@ -24,6 +24,7 @@ function formatTime(timeString) {
   return `${hours}:${minutes}`;
 }
 
+// pagina inicial de dashboard
 router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
     res.render('dashboard');
@@ -89,6 +90,34 @@ router.post('/lessons', authMiddleware(['admin', 'personal']), async (req, res) 
   }
 });
 
+// Rota para renderizar formulario de edicao da aula
+router.get('/lesson/edit/:id', authMiddleware(['admin', 'personal']), async(req, res) => {
+  const lessonId = req.params.id;
+  try {
+    const lesson = await Lesson.getLessonById(lessonId);
+    res.render('edit_lessons', {lesson});
+  } catch (error) {
+    res.status(500).json({error: 'Internal server error'});
+  }
+});
+
+// Atualizar uma aula existente
+router.put('/lesson/edit/:id', authMiddleware(['admin', 'personal']), async(req, res) => {
+  const lessonId = req.params.id;
+  const {title, description, data, time, personal } = req.body;
+  try {
+    const lesson = new Lesson(title, description, data, time, personal);
+    lesson._id = lessonId;
+    const updatedLesson = await lesson.updateLesson();
+    if (!updatedLesson) {
+      return res.status(404).json( {error: 'Lesson not found'} )
+    }
+    res.redirect('/lessons');
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' })
+  }
+});
+
 // Deleta aulas aulas a partir do id
 router.delete('/lessons/delete/:id', authMiddleware(['admin', 'personal']), async (req, res) => {
   const lessonId = req.params.id;
@@ -133,6 +162,36 @@ router.post('/personals', authMiddleware(['admin']), async (req, res) => {
   }
 });
 
+// Rota para renderizar o formulário de edição do personal
+router.get('/personal/edit/:id', authMiddleware(['admin']), async (req, res) => {
+  const personalId = req.params.id;
+  try {
+    const personal = await PersonalTrainer.getPersonalById(personalId);
+    res.render('edit_personal', { personal });
+  } catch (error) {
+    console.error('Error fetching equipment:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Atualizar um personal existente
+router.put('/personal/edit/:id', authMiddleware(['admin']), async (req, res) => {
+  const personalId = req.params.id;
+  const { name, age, username, password } = req.body;
+  try {
+    const personal = new PersonalTrainer(name, age, username, password);
+    personal._id = personalId;
+    const updatedPersonal = await personal.updatePersonal();
+    if (!updatedPersonal) {
+      return res.status(404).json({ error: 'Personal not found' });
+    }
+    res.redirect('/personals')
+  } catch (error) {
+    console.error('Error updating personal:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Deleta personal a partir de um id
 router.delete('/personal/delete/:id', authMiddleware(['admin']), async (req, res) => {
   const personalId = req.params.id;
@@ -162,7 +221,6 @@ router.get('/equipments', authMiddleware(['admin']), async (req, res) => {
   }
 });
 
-
 // Posta um novo equipamento
 router.post('/equipments', authMiddleware(['admin']), async (req, res) => {
   const { name, description, quantity, quality } = req.body;
@@ -180,7 +238,6 @@ router.post('/equipments', authMiddleware(['admin']), async (req, res) => {
 // Rota para renderizar o formulário de edição do equipamento
 router.get('/equipments/edit/:id', authMiddleware(['admin']), async (req, res) => {
   const equipmentId = req.params.id;
-
   try {
     const equipment = await Equipment.getEquipmentById(equipmentId);
     res.render('edit_equipment', { equipment });
@@ -197,23 +254,13 @@ router.put('/equipments/edit/:id', authMiddleware(['admin']), async (req, res) =
   const { name, description, quantity, quality } = req.body;
   try {
     const equipment = new Equipment(name, description, quantity, quality);
-
-    console.log(equipment);
-
     equipment._id = equipmentId;
-
-    console.log(equipment);
-
     const updatedEquipment = await equipment.updateEquipment();
-
-    console.log(updatedEquipment);
-
     if (!updatedEquipment) {
       //return res.status(404).json({ error: 'Equipment not found' });
       return res.render('tela_error', {code: 404, error: 'Equipment not found '});
     }
-
-    res.json(updatedEquipment);
+    res.redirect('/equipments')
   } catch (error) {
     console.error('Error updating equipment:', error);
     //res.status(500).json({ error: 'Internal server error' });
@@ -221,11 +268,9 @@ router.put('/equipments/edit/:id', authMiddleware(['admin']), async (req, res) =
   }
 });
 
-
 // Excluir um equipamento
 router.delete('/equipments/delete/:id', authMiddleware(['admin']), async (req, res) => {
   const equipmentId = req.params.id;
-  console.log(equipmentId);
   try {
     const deletedEquipment = await Equipment.deleteEquipment(equipmentId);
 
@@ -269,7 +314,7 @@ router.get('/payments', authMiddleware(['admin']), async (req, res) => {
   }
 });
 
-
+// Marcar que um usuario pagou a mensalidade
 router.put('/clients/:id/mark-as-paid', authMiddleware(['admin']), async (req, res) => {
   try {
     const { id } = req.params;
@@ -280,7 +325,6 @@ router.put('/clients/:id/mark-as-paid', authMiddleware(['admin']), async (req, r
     return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
-
 
 // Posta um novo cliente
 router.post('/clients', authMiddleware(['admin']), async (req, res) => {
@@ -298,32 +342,32 @@ router.post('/clients', authMiddleware(['admin']), async (req, res) => {
   }
 });
 
-// Atualizar um cliente existente
-// ToDo: Atualizar essa função para relacionar com orietação a objetos
-router.put('/clients/:id', authMiddleware(['admin']), async (req, res) => {
+// Route to render the edit form for a client
+router.get('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
   const clientId = req.params.id;
-  const { name, email, cpf, age, sex, isPaid, data } = req.body;
   try {
-    const updatedClient = await Client.findByIdAndUpdate(
-      clientId,
-      {
-        name,
-        email,
-        cpf,
-        age,
-        sex,
-        isPaid,
-        data,
-      },
-      { new: true }
-    );
+    const client = await Client.getClientById(clientId);
+    res.render('edit_client', { client });
+  } catch (error) {
+    console.error('Error fetching client:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
+// Update an existing client
+router.put('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
+  const clientId = req.params.id;
+  const { name, email, cpf, age, sex, isPaid, date } = req.body;
+  try {
+    const client = new Client(name, email, cpf, age, sex, isPaid, date);
+    client._id = clientId;
+    const updatedClient = await client.updateClient();
+    console.log(updatedClient);
     if (!updatedClient) {
       //return res.status(404).json({ error: 'Client not found' });
       return res.render('tela_error', {code: 404, error: 'Client not found' });
     }
-
-    res.json(updatedClient);
+    res.redirect('/clients');
   } catch (error) {
     console.error('Error updating client:', error);
     //res.status(500).json({ error: 'Internal server error' });
