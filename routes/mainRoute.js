@@ -40,7 +40,8 @@ router.get('/', async (req, res) => {
       });
       res.render('main_page', { data: simplifiedLessons });
     } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
+      //res.status(500).json({ error: 'Internal server error' });
+      return res.render('tela_error', {code: 500, error: 'Internal server error' });
     }
 });
 
@@ -50,12 +51,14 @@ router.get('/lessons/:id', async (req, res) => {
   try {
     const lesson = await Lesson.getById(lessonId);
     if (!lesson) {
-      res.status(404).json({ error: 'Lesson not found' });
+      //res.status(404).json({ error: 'Lesson not found' });
+      return res.render('tela_error', {code: 404, error: 'Lesson not found' });
     } else {
       res.json(lesson);
     }
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
 
@@ -65,7 +68,8 @@ router.get('/login', async (req, res) => {
     res.render('tela_login');
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
 
@@ -82,11 +86,12 @@ router.post('/login', async (req, res) => {
       } else {
         const personal = await PersonalTrainer.getPersonalUser(username);
         if(!personal) {
-          return res.status(401).json( { message: 'Invalid credentials' } );
+          return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
         }
         const isPasswordValid = await bcrypt.compare(password, personal.password);
         if(!isPasswordValid) {
-          return res.status(401).json( { message: 'Invalid credentials' } );
+          //return res.status(401).json( { message: 'Invalid credentials' } );
+          return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
         }
         const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
         res.cookie('token', token, { httpOnly: true });
@@ -94,7 +99,8 @@ router.post('/login', async (req, res) => {
       }  
     } catch (error) {
       //console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
+      //res.status(500).json({ error: 'Internal server error' });
+      return res.render('tela_error', {code: 500, error: 'Internal server error' });
     }
 });
 
