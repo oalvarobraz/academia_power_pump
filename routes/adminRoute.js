@@ -416,4 +416,8 @@ updatePaymentsStatusDaily();
 // Atualizar os pagamentos diariamente (a cada 24 horas)
 setInterval(updatePaymentsStatusDaily, 24 * 60 * 60 * 1000);
 
+router.get('*', (req, res) => {
+  return res.render('tela_error', {code: 404, error: 'Invalid route' });
+});
+
 module.exports = router;
