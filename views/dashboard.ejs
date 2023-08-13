@@ -13,17 +13,72 @@
 
     <div class="dashboard">
         <div class="header">
-            <h1>Minha Dashboard</h1>
+            <h1>Menu Dashboard</h1>
         </div>
         <div class="content">
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
+            <div class="box">
+                <h3>Atuais Aulas</h3>
+                <div class="list">
+                    <% data.forEach(lesson => { %>
+                      <div class="lesson-item card">
+                        <p><strong>Título:</strong> <%= lesson.title %></p>
+                        <p><strong>Descrição:</strong> <%= lesson.description %></p>
+                        <p><strong>Data:</strong> <%= lesson.data %></p>
+                        <p><strong>Hora:</strong> <%= lesson.time %></p>
+                        <p><strong>Personal Trainer:</strong> <%= lesson.personal.name %></p>
+                      </div>
+                    <% }); %>
+                </div>
+                <a href="/lessons" class="button">Aulas</a>
+                
+                
+                
+                
+            </div>
+
+            <div class="box">
+                <h3>Clientes que não pagaram</h3>
+                <div class="list clients-list">
+                    <% clients.forEach(cliente => { %>
+                        <div class="item card">
+                            <p><strong>Nome:</strong> <%= cliente.name %></p>
+                            <p><strong>Idade:</strong> <%= cliente.age %></p>
+                            <p><strong>Pagou:</strong> <%= cliente.isPaid %></p>
+                        </div>
+                    <% }); %>
+                </div>
+                
+                <div class="clients-statistics">
+                    <h4>Estatísticas Clientes</h4>
+                    <p><strong>Total de clientes: </strong> <%= totalClients %></p>
+                    <p><strong>Total de clientes com matricula ativa: </strong> <%= totalClientsAtivos %></p>
+                </div>
+
+                <div class="geral-statistics">
+                    <h4>Recebimento Total</h4>
+                    <p><strong>Quantidade total de Personal Trainers: </strong> <%= numberOfPersonals %></p>
+                    <p><strong>Valor da Mensalidade: </strong> R$ 100.00</p>
+                    <p><strong>Ganho total: </strong> <%= earned %></p>
+
+                </div>
+
+            </div>
+
+            <div class="box">
+                <h3>Equipamentos com Defeitos</h3>
+                <div class="list equip-list">
+                    <% equip.forEach(equipment => { %>
+                        <div class="equip-item card">
+                            <p><strong>Nome:</strong> <%= equipment.name %></p>
+                            <p><strong>Descrição:</strong> <%= equipment.description %></p>
+                            <p><strong>Quantidade:</strong> <%= equipment.quantity %></p>
+                            <p><strong>Qualidade:</strong> <%= equipment.quality %></p>
+                        </div>
+                    <% }); %>
+                </div>
+                <a href="/equipments"  class="button">Equipamentos</a>
+            </div>
         </div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>

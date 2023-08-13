@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Personal</title>
+</head>
+<body>
+    <h1>Editar Personal</h1>
+    <form id="editPersonalForm" action="/personal/edit/<%= personal._id %>?_method=PUT" method="POST">
+    
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" value="<%= personal.name %>" required>
+        
+        <label for="age">Idade:</label>
+        <input type="number" id="age" name="age" value="<%= personal.age %>" required>
+    
+        <label for="username">Nome de Usuário:</label>
+        <input type="text" id="username" name="username" value="<%= personal.username %>" required>
+
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" value="Update">Atualizar Personal</button>
+    </form>
+</body>
+</html>

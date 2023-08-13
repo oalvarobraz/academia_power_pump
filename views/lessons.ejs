@@ -22,7 +22,7 @@
               <p><strong>Hora:</strong> <%= lesson.time %></p>
               <p><strong>Personal Trainer:</strong> <%= lesson.personal.name %></p>
               <div class="lesson-actions action-buttons">
-                <button href="/lessons/edit/<%= lesson._id %>" class="button">Editar</button>
+                <button data-lesson-id="<%= lesson._id %>" class="button">Editar</button>
                 <button class="delete-button" data-lesson-id="<%= lesson._id %>" >Deletar</button>
               </div>
             </div>
@@ -60,6 +60,13 @@
         console.error('Error Deleting Lesson:', error);
       }
     });
+  });
+  const editButtons = document.querySelectorAll('.button');
+            editButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const lessonId = button.dataset.lessonId;
+            window.location.href = `/lesson/edit/${lessonId}`;
+      });
   });
 </script>
 </html>

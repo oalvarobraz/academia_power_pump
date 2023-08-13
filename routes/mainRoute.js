@@ -40,7 +40,8 @@ router.get('/', async (req, res) => {
       });
       res.render('main_page', { data: simplifiedLessons });
     } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
     }
 });
 
@@ -50,12 +51,14 @@ router.get('/lessons/:id', async (req, res) => {
   try {
     const lesson = await Lesson.getById(lessonId);
     if (!lesson) {
-      res.status(404).json({ error: 'Lesson not found' });
+      //res.status(404).json({ error: 'Lesson not found' });
+      return res.render('tela_error', {code: 404, error: 'Lesson not found' });
     } else {
       res.json(lesson);
     }
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
 
@@ -65,37 +68,46 @@ router.get('/login', async (req, res) => {
     res.render('tela_login');
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
 
 // Recebe os dados de login
 router.post('/login', async (req, res) => {
-    try {
-      const { username, password } = req.body;
-      const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
-      // Verifica se os dados estão corretos
-      if (username === admlogin.username && password === admlogin.password) {
-        const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/dashboard/home');
-      } else {
-        const personal = await PersonalTrainer.getPersonalUser(username);
-        if(!personal) {
-          return res.status(401).json( { message: 'Invalid credentials' } );
-        }
-        const isPasswordValid = await bcrypt.compare(password, personal.password);
-        if(!isPasswordValid) {
-          return res.status(401).json( { message: 'Invalid credentials' } );
-        }
-        const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/dashboard/home');
-      }  
-    } catch (error) {
-      //console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
+  try {
+    const { username, password } = req.body;
+    const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
+    // Verifica se os dados estão corretos
+    if (username === admlogin.username && password === admlogin.password) {
+      const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
+      res.cookie('token', token, { httpOnly: true });
+      res.redirect('/dashboard/home');
+    } else {
+      const personal = await PersonalTrainer.getPersonalUser(username);
+      if(!personal) {
+        return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
+      }
+      const isPasswordValid = await bcrypt.compare(password, personal.password);
+      if(!isPasswordValid) {
+        //console.log(personal);
+      
+        //console.log(isPasswordValid);
+
+        //console.log(password);
+        //console.log(personal.password);
+        //return res.status(401).json( { message: 'Invalid credentials' } );
+        return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
+      }
+      const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
+      res.cookie('token', token, { httpOnly: true });
+      res.redirect('/dashboard/home');
+    }  
+  } catch (error) {
+    console.log(error);
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
+  }
 });
 
 // Termina a seção de login do administrador

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <title>Create Workout</title>
+  <link rel="stylesheet" href="/public/css/style_workout.css">
+</head>
+
+<body>
+  <header>
+    <%- include('partials/header.ejs') %>
+  </header>
+  
+  <div class="card-container">
+    <div class="child">
+      <h2>Create Workout</h2>
+      <div class="card-input-workout">
+        <form id="createWorkoutForm" method="POST" action="/personal/create_workout"> <!-- Atualizado para a rota do personal -->
+          <label for="title">Title:</label>
+          <input type="text" id="title" name="title" required><br>
+    
+          <label for="description">Description:</label>
+          <textarea id="description" name="description" rows="4" required></textarea><br>
+    
+          <div class="day-time">
+            <label for="dayOfWeek">Day of Week:</label>
+            <input type="text" id="dayOfWeek" name="dayOfWeek" required><br>
+
+            <label for="time">Time:</label>
+            <input type="time" id="time" name="time" required><br>
+          </div>
+
+          <label for="clientId">Client ID:</label>
+          <input type="text" id="clientId" name="clientId" required><br>
+    
+          <button type="submit">Create Workout</button>
+        </form>
+      </div>
+    </div>
+    <div class="child">
+      <h2>Clients</h2>
+      <div class="card-client">
+        <div id="json-container">
+          <% clients.forEach(client => { %>
+            <div class="json-item" data-id="<%= client.id %>">
+              <p><strong>ID:</strong> <%= client.id %></p>
+              <p><strong>Name:</strong> <%= client.name %></p>
+              <p><strong>Age:</strong> <%= client.age %></p>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/public/js/script.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const clientItems = document.querySelectorAll('.json-item');
+
+      clientItems.forEach(item => {
+        item.addEventListener('click', function () {
+          const clientId = item.dataset.id;
+          document.getElementById('clientId').value = clientId;
+        });
+      });
+    });
+  </script>
+</body>
+</html>

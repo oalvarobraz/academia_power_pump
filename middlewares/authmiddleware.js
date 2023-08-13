@@ -19,41 +19,47 @@ const authMiddleware = (allowedRoles) => {
             try {
                 const decoded = jwt.verify(token, jwtSecret);
                 if (decoded.userId !== process.env.ADM_USER) {
-                    return res.status(403).json({ message: 'Access forbidden' });
+                    //return res.status(403).json({ message: 'Access forbidden' });
+                    return res.render('tela_error', {code: 403, error: 'Access forbidden' });
                 }
                 req.userId = decoded.userId;
                 req.userRole = 'admin';
                 next();
             } catch(error) {
                 console.log(error);
-                res.status(401).json( { message: 'Unauthorized'} );
+                //res.status(401).json( { message: 'Unauthorized'} );
+                return res.render('tela_error', {code: 401, error: 'Unauthorized' });
             }
         } else if (!allowedRoles.includes('admin') && allowedRoles.includes('personal')) {
             // inclui somente personal
             try {
                 const decoded = jwt.verify(token, jwtSecret);
                 if (decoded.role !== 'personal') {
-                    return res.status(403).json({ message: 'Access forbidden' });
+                    //return res.status(403).json({ message: 'Access forbidden' });
+                    return res.render('tela_error', {code: 403, error: 'Access forbidden' });
                 }
                 req.userId = decoded.userId;
                 req.userRole = decoded.role;
                 next();
             } catch(error) {
                 console.log(error);
-                res.status(401).json( { message: 'Unauthorized'} );
+                //res.status(401).json( { message: 'Unauthorized'} );
+                return res.render('tela_error', {code: 401, error: 'Unauthorized' });
             }
         } else if (allowedRoles.includes('admin') && allowedRoles.includes('personal')) {
             try {
                 const decoded = jwt.verify(token, jwtSecret);
                 if (decoded.role !== 'admin' && decoded.role !== 'personal') {
-                    return res.status(403).json({ message: 'Access forbidden' });
+                    //return res.status(403).json({ message: 'Access forbidden' });
+                    return res.render('tela_error', {code: 403, error: 'Access forbidden' });
                 }
                 req.userId = decoded.userId;
                 req.userRole = decoded.role;
                 next();
             } catch(error) {
                 console.log(error);
-                res.status(401).json( { message: 'Unauthorized'} );
+                //res.status(401).json( { message: 'Unauthorized'} );
+                return res.render('tela_error', {code: 401, error: 'Unauthorized' });
             }
         }
     }   

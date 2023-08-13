@@ -82,6 +82,7 @@ class Equipment {
     }
   }
 
+
   static async getAllEquipments() {
     try {
       return await EquipmentModel.find();
@@ -117,6 +118,10 @@ class Equipment {
     } catch (error) {
       throw new Error('Error deleting equipment');
     }
+  }
+
+  static async getAllFilterEquipments(filter = {}) {
+    return EquipmentModel.find(filter);
   }
 }
 

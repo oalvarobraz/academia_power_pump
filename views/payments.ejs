@@ -25,7 +25,7 @@
                 <p><strong>Sexo:</strong> <%= client.sex %></p>
                 <p><strong>Data:</strong> <%= new Date(client.data).toLocaleDateString('pt-BR') %></p>
                 <p><strong>Pagamento Efetuado:</strong> <%= client.isPaid ? 'Sim' : 'Não' %></p>
-                <button>Editar</button>
+                <button data-client-id="<%= client._id %>" class="button">Editar</button>
             </div>
             <% }); %>
           </div>
@@ -46,7 +46,7 @@
                 <% if (!client.isPaid) { %>
                     <button onclick="markAsPaid('<%= client._id %>')">Marcar como Pago</button>
                 <% } %>
-                <button>Editar</button>
+                <button data-client-id="<%= client._id %>" class="button">Editar</button>
                 </div>
             <% }); %>
           </div>
@@ -78,5 +78,12 @@
         console.error(error.message);
       }
     }
+    const editButtons = document.querySelectorAll('.button');
+      editButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const clientId = button.dataset.clientId;
+            window.location.href = `/client/edit/${clientId}`;
+        });
+      });
   </script>
 </html>

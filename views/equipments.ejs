@@ -95,10 +95,10 @@
             });
         });
 
-        const editButtons = document.querySelectorAll('.button'); // Supondo que você definiu corretamente a classe "button" nos botões de edição
+        const editButtons = document.querySelectorAll('.button');
         editButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const equipmentId = button.dataset.equipmentId; // Supondo que você definiu corretamente o atributo "data-equipment-id" no botão de edição
+            const equipmentId = button.dataset.equipmentId;
             window.location.href = `/equipments/edit/${equipmentId}`;
         });
         });
