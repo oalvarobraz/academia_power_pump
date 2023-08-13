@@ -42,8 +42,7 @@ body {
   
   /* Define a formatação dos campos de entrada de texto (input[type="text"]) e áreas de texto (textarea) no formulário */
   form input,
-  form textarea,
-  form select {
+  form textarea {
     width: 95%; /* Define que os campos ocuparão 100% da largura disponível */
     padding: 10px; /* Define o espaçamento interno dos campos */
     margin-bottom: 20px; /* Define o espaçamento inferior dos campos */
@@ -75,12 +74,9 @@ body {
   }
   
 
-    
- 
 
-  .form-Email {
-    display: flex;
-    flex-direction: column;
+  .form-group label {
+    padding-right: 10px;
   }
   
     /* Estilize a div child */

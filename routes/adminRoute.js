@@ -374,8 +374,8 @@ router.post('/clients', authMiddleware(['admin']), async (req, res) => {
 
 // Route to render the edit form for a client
 router.get('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
-  const clientId = req.params.id;
   try {
+    const clientId = req.params.id;
     const client = await Client.getClientById(clientId);
     res.render('edit_client', { client });
   } catch (error) {
