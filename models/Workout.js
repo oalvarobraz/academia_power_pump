@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Client = require('./Client');
 
 const workoutSchema = new mongoose.Schema({
   title: {
@@ -10,17 +11,16 @@ const workoutSchema = new mongoose.Schema({
     required: true,
   },
   dayOfWeek: {
-    type: String, // Pode ser 'Segunda', 'Terça', etc.
-    required: true,
-  },
-  personal: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Personal',
+    type: String,
     required: true,
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Client',
+    required: true,
+  },
+  clientCPF: {
+    type: String,
     required: true,
   },
   selectedEquipment: [{
@@ -32,87 +32,101 @@ const workoutSchema = new mongoose.Schema({
 const WorkoutModel = mongoose.model('Workout', workoutSchema);
 
 class Workout {
-  #title;
-  #description;
-  #dayOfWeek;
-  #personalId;
-  #clientId;
-  #selectedEquipment;
 
-  constructor(title, description, dayOfWeek, personalId, clientId) {
-    this.#title = title;
-    this.#description = description;
-    this.#dayOfWeek = dayOfWeek;
-    this.#personalId = personalId;
-    this.#clientId = clientId;
-    this.#selectedEquipment = [];
+  constructor(title, description, dayOfWeek, clientId, clientCPF, selectedEquipment) {
+    this.title = title;
+    this.description = description;
+    this.dayOfWeek = dayOfWeek;
+    this.clientId = clientId;
+    this.clientCPF = clientCPF;  
+    this.selectedEquipment = selectedEquipment || [];
+
   }
 
-  // Getters
-  get title() {
-    return this.#title;
-  }
-
-  get description() {
-    return this.#description;
-  }
-
-  get dayOfWeek() {
-    return this.#dayOfWeek;
-  }
-
-  get personalId() {
-    return this.#personalId;
-  }
-
-  get clientId() {
-    return this.#clientId;
-  }
-
-  get selectedEquipment() {
-    return this.#selectedEquipment;
-  }
-
-  // Setters
-  set title(title) {
-    this.#title = title;
-  }
-
-  set description(description) {
-    this.#description = description;
-  }
-
-  set dayOfWeek(dayOfWeek) {
-    this.#dayOfWeek = dayOfWeek;
-  }
-
-  set personalId(personalId) {
-    this.#personalId = personalId;
-  }
-
-  set clientId(clientId) {
-    this.#clientId = clientId;
-  }
-
-  // Custom methods
-  selectEquipment(equipmentId) {
-    this.#selectedEquipment.push(equipmentId);
-  }
 
   async save() {
     try {
       const newWorkout = new WorkoutModel({
-        title: this.#title,
-        description: this.#description,
-        dayOfWeek: this.#dayOfWeek,
-        personal: this.#personalId,
-        client: this.#clientId,
-        selectedEquipment: this.#selectedEquipment,
+        title: this.title,
+        description: this.description,
+        dayOfWeek: this.dayOfWeek,
+        client: this.clientId,
+        clientCPF: this.clientCPF,
+        selectedEquipment: this.selectedEquipment,
       });
       await newWorkout.save();
       return newWorkout;
     } catch (error) {
+      console.log(error)
       throw new Error('Workout could not be saved');
+    }
+  }
+
+  static async workoutExistsForDay(clientCPF, dayOfWeek) {
+    try {
+      const existingWorkout = await WorkoutModel.findOne({ clientCPF, dayOfWeek });
+      return !!existingWorkout;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  
+
+  static async findWorkoutByCPF(clientCPF) {
+      try {
+        console.log('Searching for workout with CPF:', clientCPF);
+        const workout = await WorkoutModel.findOne({ clientCPF });
+        console.log('Found Workout:', workout);
+        return workout;
+      } catch (error) {
+        throw new Error(error.message);
+      }
+  }
+
+  static async findCPFById(clientId) {
+    try {
+      const client = await Client.getClientById(clientId); 
+      return client.cpf;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async updateWorkout(clientCPF, dayOfWeek, title, description, selectedEquipment) {
+    try {
+      const existingWorkout = await WorkoutModel.findOne({ clientCPF, dayOfWeek });
+      
+      if (!existingWorkout) {
+        throw new Error('No existing workout found for this day');
+      }
+      
+      existingWorkout.title = title;
+      existingWorkout.description = description;
+      existingWorkout.selectedEquipment = selectedEquipment;
+  
+      await existingWorkout.save();
+      return existingWorkout;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async findExistingWorkout(clientId, dayOfWeek) {
+    try {
+      const clientCPF = await Client.findCPFById(clientId);
+      return await WorkoutModel.findOne({ clientCPF, dayOfWeek });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async findExistingWorkoutbyCPF(clientCPF, dayOfWeek) {
+    try {
+      const workout = await WorkoutModel.findOne({ clientCPF, dayOfWeek }).populate('selectedEquipment');
+      console.log('workout by cpf and day: ', workout);
+      return workout;
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 }

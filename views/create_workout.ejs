@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <title>Create Workout</title>
-  <link rel="stylesheet" href="/public/css/style_workout.css">
+  <link rel="stylesheet" href="/public/css/style_workouts.css">
 </head>
 
 <body>
@@ -13,8 +13,8 @@
   <div class="card-container">
     <div class="child">
       <h2>Create Workout</h2>
-      <div class="card-input-workout">
-        <form id="createWorkoutForm" method="POST" action="/personal/create_workout"> <!-- Atualizado para a rota do personal -->
+      <div class="card">
+        <form id="createWorkoutForm" method="POST" action="/create_workout">
           <label for="title">Title:</label>
           <input type="text" id="title" name="title" required><br>
     
@@ -24,13 +24,20 @@
           <div class="day-time">
             <label for="dayOfWeek">Day of Week:</label>
             <input type="text" id="dayOfWeek" name="dayOfWeek" required><br>
-
-            <label for="time">Time:</label>
-            <input type="time" id="time" name="time" required><br>
           </div>
 
           <label for="clientId">Client ID:</label>
           <input type="text" id="clientId" name="clientId" required><br>
+
+          <label for="selectedEquipment">Equipments:</label>
+          <select id="selectedEquipment" name="selectedEquipment" multiple required>
+            <% equipmentOptions.forEach(equipment => { %>
+              <option value="<%= equipment._id %>"><%= equipment.name %></option>
+            <% }); %>
+          </select><br>
+          <div id="selectedEquipmentDisplay"></div>
+
+
     
           <button type="submit">Create Workout</button>
         </form>
@@ -43,12 +50,13 @@
           <% clients.forEach(client => { %>
             <div class="json-item" data-id="<%= client.id %>">
               <p><strong>ID:</strong> <%= client.id %></p>
-              <p><strong>Name:</strong> <%= client.name %></p>
-              <p><strong>Age:</strong> <%= client.age %></p>
+              <p><strong>Nome:</strong> <%= client.name %></p>
+              <p><strong>Idade:</strong> <%= client.age %></p>
+              <a href="/personal/view_workouts/<%= client.id %>">View Workouts</a>
             </div>
           <% }); %>
         </div>
-      </div>
+      </div>      
     </div>
   </div>
 
@@ -57,15 +65,30 @@
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const clientItems = document.querySelectorAll('.json-item');
+    const clientItems = document.querySelectorAll('.json-item');
 
-      clientItems.forEach(item => {
-        item.addEventListener('click', function () {
-          const clientId = item.dataset.id;
-          document.getElementById('clientId').value = clientId;
-        });
+    clientItems.forEach(item => {
+      item.addEventListener('click', function () {
+        const clientId = item.dataset.id;
+        console.log(clientId);
+        document.getElementById('clientId').value = clientId;
       });
     });
+
+    const selectedEquipmentInput = document.getElementById('selectedEquipment');
+    selectedEquipmentInput.addEventListener('change', function () {
+      const selectedOptions = Array.from(selectedEquipmentInput.selectedOptions);
+      const selectedEquipment = selectedOptions.map(option => option.value);
+      console.log(selectedEquipment);
+
+      selectedEquipmentDisplay.innerHTML = `
+      <p>Selected Equipment:</p>
+      <ul>
+        ${selectedOptions.map(option => `<li>${option.text}</li>`).join('')}
+      </ul>
+    `;
+    });
+  });
   </script>
 </body>
 </html>

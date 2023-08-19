@@ -142,9 +142,9 @@ class Client {
     }
   }
 
-  static async getClientByEmail(email) {
+  static async getClientByCPF(cpf) {
     try {
-      return await ClientModel.findOne({ email });
+      return await ClientModel.findOne({ cpf });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -227,6 +227,15 @@ class Client {
     }
   }
 
+  static async findCPFById(clientId) {
+    try {
+      const client = await ClientModel.findById(clientId);
+      return client.cpf;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  
 }
 
 module.exports = Client;

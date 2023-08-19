@@ -17,6 +17,12 @@
     </style>
 </head>
 <body>
+    <form action="/search_exercise" method="GET">
+        <label for="cpf">Search by CPF:</label>
+        <input type="text" id="cpf" name="cpf" placeholder="Enter client CPF" required>
+        <button type="submit">Search</button>
+    </form>
+
     <div id="json-container">
         <% data.forEach(item => { %>
             <div class="json-item">
@@ -29,6 +35,6 @@
         <% }); %>
     </div>
 
-
+    
 </body>
 </html>

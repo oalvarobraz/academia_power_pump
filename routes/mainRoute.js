@@ -4,6 +4,7 @@ const Lesson = require('../models/Lesson');
 const PersonalTrainer = require('../models/PersonalTrainer');
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
+const Workout = require('../models/Workout');
 const bcrypt = require('bcrypt');
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -90,13 +91,6 @@ router.post('/login', async (req, res) => {
       }
       const isPasswordValid = await bcrypt.compare(password, personal.password);
       if(!isPasswordValid) {
-        //console.log(personal);
-      
-        //console.log(isPasswordValid);
-
-        //console.log(password);
-        //console.log(personal.password);
-        //return res.status(401).json( { message: 'Invalid credentials' } );
         return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
       }
       const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
@@ -107,6 +101,33 @@ router.post('/login', async (req, res) => {
     console.log(error);
     //res.status(500).json({ error: 'Internal server error' });
     return res.render('tela_error', {code: 500, error: 'Internal server error' });
+  }
+});
+
+router.get('/search_exercise', async (req, res) => {
+  try {
+    const { cpf } = req.query;
+    if (!cpf) {
+      return res.render('tela_error', { code: 400, error: 'CPF parameter is required' });
+    }
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    // Traduzindo o número do dia da semana para um nome
+    const daysOfWeekNames = [
+      'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'
+    ];
+    const dayName = daysOfWeekNames[dayOfWeek];
+    console.log('Dia da semana: ', dayName);
+    const workout = await Workout.findExistingWorkoutbyCPF(cpf, dayName);
+
+    if (workout) {
+      return res.render('client_workout', { workout: workout });
+    } else {
+      return res.render('tela_error', { code: 404, error: 'Workout not found for today' });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.render('tela_error', { code: 500, error: 'Internal server error' });
   }
 });
 

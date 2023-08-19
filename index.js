@@ -25,6 +25,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 app.use(methodOverride('_method'));
+app.use(require('./routes/personalRoute'));
+
 
 // Importação e utilização das rotas do aplicativo
 app.use('/', require('./routes/mainRoute'));
