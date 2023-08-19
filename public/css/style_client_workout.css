@@ -42,3 +42,14 @@ body {
     color: #F8F10D;
     font-weight: bold;
 }
+
+.equipment-box {
+    background-color: #000;
+    border: 2px solid #F8F10D;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+.equipment-info {
+    color: #F8F10D;
+}

@@ -117,7 +117,7 @@ router.get('/search_exercise', async (req, res) => {
       'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'
     ];
     const dayName = daysOfWeekNames[dayOfWeek];
-    console.log('Dia da semana: ', dayName);
+    //console.log('Dia da semana: ', dayName);
     const workout = await Workout.findExistingWorkoutbyCPF(cpf, dayName);
 
     if (workout) {

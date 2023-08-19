@@ -27,20 +27,23 @@ const workoutSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Equipment',
   }],
+  repetitions: {
+    type: String,
+  }
 });
 
 const WorkoutModel = mongoose.model('Workout', workoutSchema);
 
 class Workout {
 
-  constructor(title, description, dayOfWeek, clientId, clientCPF, selectedEquipment) {
+  constructor(title, description, dayOfWeek, clientId, clientCPF, selectedEquipment, repetitions) {
     this.title = title;
     this.description = description;
     this.dayOfWeek = dayOfWeek;
     this.clientId = clientId;
     this.clientCPF = clientCPF;  
     this.selectedEquipment = selectedEquipment || [];
-
+    this.repetitions = repetitions;
   }
 
 
@@ -53,6 +56,7 @@ class Workout {
         client: this.clientId,
         clientCPF: this.clientCPF,
         selectedEquipment: this.selectedEquipment,
+        repetitions: this.repetitions,
       });
       await newWorkout.save();
       return newWorkout;
@@ -74,9 +78,9 @@ class Workout {
 
   static async findWorkoutByCPF(clientCPF) {
       try {
-        console.log('Searching for workout with CPF:', clientCPF);
+        //console.log('Searching for workout with CPF:', clientCPF);
         const workout = await WorkoutModel.findOne({ clientCPF });
-        console.log('Found Workout:', workout);
+        //console.log('Found Workout:', workout);
         return workout;
       } catch (error) {
         throw new Error(error.message);
@@ -123,7 +127,7 @@ class Workout {
   static async findExistingWorkoutbyCPF(clientCPF, dayOfWeek) {
     try {
       const workout = await WorkoutModel.findOne({ clientCPF, dayOfWeek }).populate('selectedEquipment');
-      console.log('workout by cpf and day: ', workout);
+      //console.log('workout by cpf and day: ', workout);
       return workout;
     } catch (error) {
       throw new Error(error.message);

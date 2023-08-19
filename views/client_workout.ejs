@@ -11,12 +11,15 @@
         <h1 class="workout-title"><%= workout.dayOfWeek %></h1>
         <p class="workout-description"><strong>Descrição:</strong> <%= workout.description %></p>
         <% if (workout.selectedEquipment && workout.selectedEquipment.length > 0) { %>
-            <p class="workout-details"><strong>Equipment to Use:</strong></p>
-            <ul class="workout-equipment">
+            <div class="workout-equipment">
                 <% workout.selectedEquipment.forEach(equipment => { %>
-                    <li><%= equipment.name %></li>
+                    <div class="equipment-box">
+                        <p class="equipment-info"><strong>Nome:</strong> <%= equipment.name %></p>
+                        <p class="equipment-info"><strong>Descrição:</strong> <%= equipment.description %></p>
+                        <p class="equipment-info"><strong>Repetições:</strong> <%= workout.repetitions %></p>
+                    </div>
                 <% }); %>
-            </ul>
+            </div>
         <% } %>
     </div>
 </body>

@@ -18,7 +18,7 @@ router.get('/create_workout', authMiddleware(['personal']), async (req, res) => 
   });
   
 router.post('/create_workout', authMiddleware(['personal']), async (req, res) => {
-  let { title, description, dayOfWeek, clientId, selectedEquipment } = req.body;
+  let { title, description, dayOfWeek, clientId, selectedEquipment, repetitions } = req.body;
 
   try {
     const clientCPF = await Client.findCPFById(clientId);
@@ -38,7 +38,8 @@ router.post('/create_workout', authMiddleware(['personal']), async (req, res) =>
       dayOfWeek,
       clientId,
       clientCPF,
-      selectedEquipment
+      selectedEquipment,
+      repetitions
     );
 
     await newWorkout.save();
