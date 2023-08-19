@@ -31,3 +31,31 @@ npm start
 O servidor será iniciado e estará pronto para atender as requisições.
 
 Certifique-se de que o MongoDB esteja em execução e acessível com a URI fornecida no arquivo `.env`.
+
+## Diagramas
+### Casos de uso
+![Diagrama de casos de uso](./diagrams/Diagrama%20de%20casos%20de%20uso.png)
+### Classe
+![Diagrama de classe](./diagrams/Diagrama%20de%20classes.png)
+### Diagramas de atividade
+
+#### Autenticar usuário
+![Autenticação de usuários](./diagrams/Autenticar%20usuario.png)
+
+#### Gerencia Exercícios
+![Gerenciar exercícios](./diagrams/Gerencia%20Exercicios.png)
+
+#### Gerencia Pagamentos
+![Gerenciar Pagamentos](./diagrams/Gerencia%20pagamentos.png)
+
+#### Gerencia Aulas
+![Gerenciar Aulas](./diagrams/Gerenciar%20Aulas.png)
+
+#### Gerenciar Equipamentos
+![Gerenciar Equipamentos](./diagrams/Gerenciar%20Equipamentos.png)
+
+#### Logar administrador e personal trainer
+![Logar administrador e personal trainer](./diagrams/Logar%20admin_personal.png)
+
+#### Visualizar plano de exercícios
+![Visualizar plano de exercícios](./diagrams/PlanoDeExercicios.png)
