@@ -112,7 +112,7 @@ router.get('/search_exercise', async (req, res) => {
     }
     const today = new Date();
     const dayOfWeek = today.getDay();
-    // Traduzindo o número do dia da semana para um nome
+
     const daysOfWeekNames = [
       'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'
     ];

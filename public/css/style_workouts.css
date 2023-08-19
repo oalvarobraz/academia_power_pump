@@ -200,3 +200,18 @@ form button:hover {
     color: #000; /* Set text color of each option on hover */
   }
   
+  .day-time {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+
+  .day-time input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+  }
