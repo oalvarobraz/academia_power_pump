@@ -7,20 +7,14 @@
     <link rel="stylesheet" href="/public/css/style_error.css"/>
 </head>
 <body>
-    <main>
-        <div class="card-error">
-            <div class="error-content">
-                <h2>Error</h2>
-                <h3>
-                    <%= code %>
-                </h3>
-                <h3>
-                    <%= error %>
-                </h3>
-                <button id="goBack" class="botao">Voltar</button>
-            </div>
+    <div class="pagina-do-erro">
+        <img src="../public/imgs/robo.png" alt="Robô 404" class="robo">
+        <div class="codigo-do-erro"><%= code %></div>
+        <div class="mensagem-do-erro">OPS! "<%= error %>"</div>
+        <div class="link">
+          <button id="goBack" class="botao">Voltar</button>
         </div>
-    </main>
+      </div>
 </body>
 <script>
     document.getElementById("goBack").addEventListener("click", function() {

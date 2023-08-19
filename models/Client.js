@@ -150,7 +150,7 @@ class Client {
     }
   }
 
-  static async updateClient() {
+  static async updateClient(clientId, updatedData) {
     try {
       return await ClientModel.findByIdAndUpdate(
         this._id,
@@ -206,16 +206,6 @@ class Client {
 
   static async getAllFilterClients(filter = {}) {
     return ClientModel.find(filter);
-  }
-
-  static async scheduleWorkout(title, description, dayOfWeek, personalId, clientId) {
-    try {
-      const newWorkout = new Workout(title, description, dayOfWeek, personalId, clientId);
-      await newWorkout.save();
-      return newWorkout;
-    } catch (error) {
-      throw new Error(error.message);
-    }
   }
 
   static async selectEquipmentForWorkout(workout, equipmentId) {

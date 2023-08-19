@@ -127,7 +127,8 @@ router.get('/lesson/edit/:id', authMiddleware(['admin', 'personal']), async(req,
     const personals = await PersonalTrainer.getAllPersonals();
     res.render('edit_lessons', {lesson, data: personals});
   } catch (error) {
-    res.status(500).json({error: 'Internal server error'});
+    //res.status(500).json({error: 'Internal server error'});
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
 
@@ -140,11 +141,13 @@ router.put('/lesson/edit/:id', authMiddleware(['admin', 'personal']), async(req,
     lesson._id = lessonId;
     const updatedLesson = await lesson.updateLesson();
     if (!updatedLesson) {
-      return res.status(404).json( {error: 'Lesson not found'} )
+      //return res.status(404).json( {error: 'Lesson not found'} )
+      return res.render('tela_error', {code: 404, error: 'Lesson not found' });
     }
     res.redirect('/lessons');
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' })
+    //res.status(500).json({ error: 'Internal server error' })
+    return res.render('tela_error', {code: 404, error: 'Internal server error' });
   }
 });
 
@@ -200,7 +203,8 @@ router.get('/personal/edit/:id', authMiddleware(['admin']), async (req, res) => 
     res.render('edit_personal', { personal });
   } catch (error) {
     console.error('Error fetching equipment:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
 
@@ -213,12 +217,14 @@ router.put('/personal/edit/:id', authMiddleware(['admin']), async (req, res) => 
     personal._id = personalId;
     const updatedPersonal = await personal.updatePersonal();
     if (!updatedPersonal) {
-      return res.status(404).json({ error: 'Personal not found' });
+      //return res.status(404).json({ error: 'Personal not found' });
+      return res.render('tela_error', {code: 404, error: 'Personal trainer not found' });
     }
     res.redirect('/personals')
   } catch (error) {
     console.error('Error updating personal:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
 
@@ -380,19 +386,32 @@ router.get('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
     res.render('edit_client', { client });
   } catch (error) {
     console.error('Error fetching client:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
 
-// Update an existing client
-router.put('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
+
+// Atualizar um cliente existente
+// ToDo: Atualizar essa função para relacionar com orietação a objetos
+router.put('/clients/:id', authMiddleware(['admin']), async (req, res) => {
   const clientId = req.params.id;
-  const { name, email, cpf, age, sex, isPaid, date } = req.body;
+  const { name, email, cpf, age, sex, isPaid, data } = req.body;
   try {
-    const client = new Client(name, email, cpf, age, sex, isPaid, date);
-    client._id = clientId;
-    const updatedClient = await client.updateClient();
-    console.log(updatedClient);
+    const updatedClient = await Client.findByIdAndUpdate(
+      clientId,
+      {
+        name,
+        email,
+        cpf,
+        age,
+        sex,
+        isPaid,
+        data,
+      },
+      { new: true }
+    );
+
     if (!updatedClient) {
       //return res.status(404).json({ error: 'Client not found' });
       return res.render('tela_error', {code: 404, error: 'Client not found' });

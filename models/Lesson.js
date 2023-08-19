@@ -74,7 +74,6 @@ class Lesson {
   set setPersonalId(personalId) {
     this.personalId = personalId;
   }
-
   async save() {
     try {
       const newLesson = new LessonModel({
