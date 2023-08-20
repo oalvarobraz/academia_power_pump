@@ -392,26 +392,15 @@ router.get('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
 });
 
 
-// Atualizar um cliente existente
-// ToDo: Atualizar essa função para relacionar com orietação a objetos
-router.put('/clients/:id', authMiddleware(['admin']), async (req, res) => {
+// Update an existing client
+router.put('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
   const clientId = req.params.id;
-  const { name, email, cpf, age, sex, isPaid, data } = req.body;
+  const { name, email, cpf, age, sex, isPaid, date } = req.body;
   try {
-    const updatedClient = await Client.findByIdAndUpdate(
-      clientId,
-      {
-        name,
-        email,
-        cpf,
-        age,
-        sex,
-        isPaid,
-        data,
-      },
-      { new: true }
-    );
-
+    const client = new Client(name, email, cpf, age, sex, isPaid, date);
+    client._id = clientId;
+    const updatedClient = await client.updateClient();
+    console.log(updatedClient);
     if (!updatedClient) {
       //return res.status(404).json({ error: 'Client not found' });
       return res.render('tela_error', {code: 404, error: 'Client not found' });
@@ -423,6 +412,7 @@ router.put('/clients/:id', authMiddleware(['admin']), async (req, res) => {
     return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
+
 
 // Excluir um cliente
 router.delete('/clients/:id', authMiddleware(['admin']), async (req, res) => {

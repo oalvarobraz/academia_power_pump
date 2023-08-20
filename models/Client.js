@@ -150,7 +150,15 @@ class Client {
     }
   }
 
-  static async updateClient(clientId, updatedData) {
+  static async getClientByEmail(email) {
+    try {
+      return await ClientModel.findOne({ email });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async updateClient() {
     try {
       return await ClientModel.findByIdAndUpdate(
         this._id,

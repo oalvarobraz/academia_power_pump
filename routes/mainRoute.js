@@ -76,32 +76,33 @@ router.get('/login', async (req, res) => {
 
 // Recebe os dados de login
 router.post('/login', async (req, res) => {
-    try {
-      const { username, password } = req.body;
-      const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
-      // Verifica se os dados estão corretos
-      if (username === admlogin.username && password === admlogin.password) {
-        const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/dashboard/home');
-      } else {
-        const personal = await PersonalTrainer.getPersonalUser(username);
-        if(!personal) {
-          return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
-        }
-        const isPasswordValid = await bcrypt.compare(password, personal.password);
-        if(!isPasswordValid) {
-          return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
-        }
-        const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/dashboard/home');
-      }  
-    } catch (error) {
-        console.log(error);
-        //res.status(500).json({ error: 'Internal server error' });
-        return res.render('tela_error', {code: 500, error: 'Internal server error' });
+  try {
+    const { username, password } = req.body;
+    const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
+    // Verifica se os dados estão corretos
+    if (username === admlogin.username && password === admlogin.password) {
+      const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
+      res.cookie('token', token, { httpOnly: true });
+      res.redirect('/dashboard/home');
+    } else {
+      const personal = await PersonalTrainer.getPersonalUser(username);
+      if(!personal) {
+        return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
       }
+      const isPasswordValid = await bcrypt.compare(password, personal.password);
+      if(!isPasswordValid) {
+        //return res.status(401).json( { message: 'Invalid credentials' } );
+        return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
+      }
+      const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
+      res.cookie('token', token, { httpOnly: true });
+      res.redirect('/dashboard/home');
+    }  
+  } catch (error) {
+    //console.log(error);
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
+  }
 });
 
 router.get('/search_exercise', async (req, res) => {
