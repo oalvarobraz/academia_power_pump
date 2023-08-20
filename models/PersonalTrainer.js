@@ -64,7 +64,6 @@ class PersonalTrainer {
     this.password = password;
   }
 
-  // CRUD operations
   async createPersonal() {
     try {
       const newPersonal = new PersonalModel({
@@ -99,7 +98,8 @@ class PersonalTrainer {
 
   static async getPersonalUser(username) {
     try {
-      return await PersonalModel.findOne({username});
+      console.log(await PersonalModel.findOne({ username }));
+      return await PersonalModel.findOne({ username });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -121,6 +121,25 @@ class PersonalTrainer {
     try {
       const deletedPersonal = await PersonalModel.findByIdAndDelete(personalId);
       return deletedPersonal;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async scheduleWorkout(title, description, dayOfWeek, clientId, personalId) {
+    try {
+      const newWorkout = new Workout(title, description, dayOfWeek, personalId, clientId);
+      await newWorkout.save();
+      return newWorkout;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async selectEquipmentForWorkout(workout, equipmentId) {
+    try {
+      workout.selectEquipment(equipmentId);
+      await workout.save();
     } catch (error) {
       throw new Error(error.message);
     }

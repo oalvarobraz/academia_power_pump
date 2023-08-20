@@ -142,6 +142,14 @@ class Client {
     }
   }
 
+  static async getClientByCPF(cpf) {
+    try {
+      return await ClientModel.findOne({ cpf });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   static async getClientByEmail(email) {
     try {
       return await ClientModel.findOne({ email });
@@ -184,6 +192,48 @@ class Client {
       throw new Error(error.message);
     }
   }
+
+  static async updateAllPaymentsStatus() {
+    try {
+      const clients = await ClientModel.find();
+      const currentDate = new Date();
+
+      for (const client of clients) {
+        const clientDate = new Date(client.data);
+        const oneMonthAgo = new Date(currentDate);
+        oneMonthAgo.setMonth(currentDate.getMonth() - 1);
+
+        if (clientDate < oneMonthAgo) {
+          await ClientModel.findByIdAndUpdate(client._id, { isPaid: false });
+        }
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async getAllFilterClients(filter = {}) {
+    return ClientModel.find(filter);
+  }
+
+  static async selectEquipmentForWorkout(workout, equipmentId) {
+    try {
+      workout.selectEquipment(equipmentId);
+      await workout.save();
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async findCPFById(clientId) {
+    try {
+      const client = await ClientModel.findById(clientId);
+      return client.cpf;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  
 }
 
 module.exports = Client;

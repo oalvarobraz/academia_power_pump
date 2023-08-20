@@ -1,77 +1,77 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: #1A1A1A;
-  }
-  
-  .pagina-do-erro {
-    width: 100%;
-    max-width: 1879px;
-    height: 100vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .mensagem-do-erro {
-    width: 817px;
-    height: auto;
-    max-width: 90%;
-    position: absolute;
-    text-align: center;
-    color: #F8F10D;
-    font-size: 3em;
-    font-family: Inter;
-    font-weight: 700;
-    word-wrap: break-word;
-    transform: translateY(350%);
-  }
-  
-  .botao {
-    width: 185px;
-    height: 59px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #F8F10D;
-    border: 2px solid black;
-    border-radius: 6px;
-    font-size: 1.3em;
-    color: black;
-    outline: none;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
-  }
-  
-  .botao:hover {
-    background-color: black;
-    color: white;
-    border: 2px solid #F8F10D;
-  }
-  
-  .robo {
-    width: 50%;
-    max-width: 503px;
-    height: auto;
-    margin-bottom: 50px;
-    transform: translateX(2%);
-  }
-  
-  .codigo-do-erro {
-    width: 132px;
-    height: 54px;
-    /* position: absolute;
-    top: 30%;
-    left: 50%; */
-    transform: translateY(-780%);
-    text-align: center;
-    color: #F8F10D;
-    font-size: 2em;
-    font-family: Inter;
-    font-weight: 700;
-    word-wrap: break-word;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #1A1A1A;
+}
+
+.pagina-do-erro {
+  width: 100%;
+  max-width: 1879px;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mensagem-do-erro {
+  width: 817px;
+  height: auto;
+  max-width: 90%;
+  position: absolute;
+  text-align: center;
+  color: #F8F10D;
+  font-size: 3em;
+  font-family: Inter;
+  font-weight: 700;
+  word-wrap: break-word;
+  transform: translateY(350%);
+}
+
+.botao {
+  width: 185px;
+  height: 59px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F8F10D;
+  border: 2px solid black;
+  border-radius: 6px;
+  font-size: 1.3em;
+  color: black;
+  outline: none;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.botao:hover {
+  background-color: black;
+  color: white;
+  border: 2px solid #F8F10D;
+}
+
+.robo {
+  width: 50%;
+  max-width: 503px;
+  height: auto;
+  margin-bottom: 50px;
+  transform: translateX(2%);
+}
+
+.codigo-do-erro {
+  width: 132px;
+  height: 54px;
+  /* position: absolute;
+  top: 30%;
+  left: 50%; */
+  transform: translateY(-780%);
+  text-align: center;
+  color: #F8F10D;
+  font-size: 2em;
+  font-family: Inter;
+  font-weight: 700;
+  word-wrap: break-word;
+}

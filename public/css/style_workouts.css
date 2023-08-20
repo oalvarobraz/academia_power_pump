@@ -1,29 +1,217 @@
-/* style_workouts.css */
 body {
-    font-family: Arial, sans-serif;
-}
+    font-family: Arial, sans-serif; /* Define a família de fontes a ser usada */
+    min-height: 100vh; /* Define a altura mínima da área visível da página */
+    background: #1a1a1a; /* Define a cor de fundo do corpo da página */
+    margin: 50px; /* Define as margens externas do corpo da página */
+  }
+  
+  /* Define a formatação do cabeçalho (header) da página */
+  header {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif; /* Define a família de fontes a ser usada */
+    position: fixed; /* Define que o cabeçalho ficará fixo no topo da página */
+    top: 0;
+    left: 0;
+  }
 
 
-.workout-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+/* Define a formatação dos elementos de nível H2 */
+h1 {
+    color: #F8F10D; /* Define a cor do texto dos elementos H2 */
+    text-align: center;
+    margin-left: 50px;
 }
 
 h2 {
+    color: #F8F10D; /* Define a cor do texto dos elementos H2 */
     text-align: center;
 }
 
-.workout-list {
-    margin-top: 20px;
+
+
+form {
+    width: 500px; /* Define a largura do formulário */
+    border: 1px solid #ccc; /* Define uma borda de 1px sólida de cor cinza (#ccc) */
+    padding: 20px; /* Define o espaçamento interno do formulário */
+    background-color: #fff; /* Define a cor de fundo do formulário */
+    border-radius: 5px; /* Define o raio do arredondamento das bordas do formulário */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Define uma sombra em torno do formulário */
 }
 
-.workout-item {
-    border: 1px solid #ddd;
+/* Define a formatação das etiquetas (labels) dentro do formulário */
+form label {
+    display: block; /* Define que as etiquetas serão exibidas em bloco (cada uma em uma linha) */
+    margin-bottom: 10px; /* Define o espaçamento inferior das etiquetas */
+    font-weight: bold; /* Define o peso da fonte das etiquetas como negrito */
+    color: black;
+}
+
+/* Define a formatação dos campos de entrada de texto (input[type="text"]) e áreas de texto (textarea) no formulário */
+form input,
+form textarea {
+    width: 95%; /* Define que os campos ocuparão 100% da largura disponível */
+    padding: 10px; /* Define o espaçamento interno dos campos */
+    margin-bottom: 20px; /* Define o espaçamento inferior dos campos */
+    border: 1px solid #ccc; /* Define uma borda de 1px sólida de cor cinza (#ccc) */
+    border-radius: 5px; /* Define o raio do arredondamento das bordas dos campos */
+    resize: none;
+}
+
+
+/* Define a formatação do botão dentro do formulário */
+form button {
+    width :100%;
+    height :45px;
+    background-color:#F8F10D;/* Cor de fundo amarela*/
+    border-color:black;/* Cor da borda preta*/
+    font-size :1.3em;/* Tamanho da fonte*/
+    color:black;/* Cor do texto preto*/
+    outline:none;/* Sem contorno*/
+    border-radius:6px;/* Bordas arredondadas*/
+    cursor:pointer;/* Cursor do mouse em forma de ponteiro*/
+    transition:.2s;/* Transição suave ao passar o mouse*/
+}
+
+/* Define a formatação do botão quando o cursor do mouse estiver sobre ele */
+form button:hover {
+    background-color:black;/* Cor de fundo preta*/
+    color:white;/* Cor do texto branco*/
+    border-color:#F8F10D;/* Cor da borda amarela*/
+    }
+
+/* Estilize o card-container para usar flexbox */
+.card-container {
+    display: flex;
+    margin-left: 55px;
+    justify-content: space-between;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 30px;
+}
+  
+/* Estilize a div child */
+.child {
+    flex: 1; /* Faz com que cada div child ocupe uma quantidade igual de espaço */
     padding: 10px;
-    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+    background-color: #0F0F0F;
 }
 
-.workout-item p {
-    margin: 5px 0;
+.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+.card-client {
+  max-height: 500px;
+  overflow-y: auto;
+}
+  
+/* Estilizando a barra de rolagem */
+.card-client::-webkit-scrollbar {
+  width: 10px; /* Largura da barra de rolagem */
+  }
+  
+  /* Estilizando o thumb (a alça) da barra de rolagem */
+  .card-client::-webkit-scrollbar-thumb {
+  background-color: #888; /* Cor do thumb */
+  border-radius: 5px; /* Raio do arredondamento do thumb */
+  }
+  
+  /* Estilizando a parte da barra de rolagem que não é o thumb */
+  .card-client::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Cor da parte da barra de rolagem que não é o thumb */
+  border-radius: 5px; /* Raio do arredondamento da parte da barra de rolagem que não é o thumb */
+  }
+  
+  
+  /* Estilize a div com a classe json-item dentro do json-container */
+  #json-container .json-item {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  /* Define a formatação de um item JSON dentro do contêiner */
+  .json-item {
+    cursor: pointer; 
+    background-color: #f9f9f9; /* Define a cor de fundo do item JSON */
+    border: 1px solid #ccc; /* Define uma borda de 1px sólida de cor cinza (#ccc) para o item JSON */
+    border-radius: 5px; /* Define o raio do arredondamento das bordas do item JSON */
+    padding: 10px; /* Define o espaçamento interno do item JSON */
+    margin-bottom: 10px; /* Define o espaçamento inferior do item JSON */
+  }
+  
+  .json-item:hover {
+  background-color: #F8F10D;
+  color: #0F0F0F;
+  }
+  
+  .json-item a {
+    display: inline-block; /* Display the link as a block to apply styling */
+    margin-top: 5px; /* Add some spacing between the client information and the link */
+    color: #070707; /* Set the link color */
+    text-decoration: none; /* Remove underline from the link */
+    font-weight: bold; /* Make the link text bold */
+  }
+  
+  .json-item a:hover {
+    text-decoration: underline; /* Add underline on hover */
+  }
+
+  /* Add this CSS to your existing styles */
+#selectedEquipmentDisplay {
+    margin-top: 10px; /* Add some spacing from the dropdown */
+  }
+
+  #selectedEquipmentDisplay li {
+    
+    padding: 5px; /* Add padding around each option */
+    margin: 5px 0; /* Add spacing between options */
+    border-radius: 5px; /* Add rounded corners to the options */
+    
+  }
+
+  /* Add this CSS to your existing styles */
+#selectedEquipment {
+    width: 100%; /* Make the dropdown full width */
+    padding: 10px; /* Add some padding to the dropdown */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 5px; /* Add rounded corners */
+    background-color: #fff; /* Set background color */
+    color: #333; /* Set text color */
+  }
+  
+  #selectedEquipment option {
+    padding: 10px; /* Add padding to each option */
+    color: #000; /* Set text color of each option */
+    border-radius: 5px; /* Add rounded corners to each option */
+  }
+  
+  #selectedEquipment option:hover {
+    background-color: #F8F10D; /* Set background color of each option on hover */
+    color: #000; /* Set text color of each option on hover */
+  }
+  
+  .day-time {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+
+  .day-time input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+  }

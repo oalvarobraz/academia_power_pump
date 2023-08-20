@@ -9,19 +9,18 @@ body {
 header {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif; /* Define a família de fontes a ser usada */
-    position: fixed; /* Define que o cabeçalho ficará fixo no topo da página */
+    font-family: Arial, sans-serif;
+    position: fixed;
     top: 0;
     left: 0;
 }
   
 .dashboard {
-    max-width: 1200px;
+    max-width: 1300px;
+    height: 650px;
     margin: 20px auto;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    padding: 20px;
+    padding-left: 50px;
+    padding-top: 20px;
 }
 
 .header {
@@ -36,12 +35,83 @@ header {
 }
 
 .box {
-    background-color: #333;
-    height: 100px;
+    background-color: #332F2E;
+    height: 550px;
     border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    flex-direction: row;
+    align-content: flex-start;
 }
   
-
-h1 {
+h1, h3, h4 {
     color: #F8F10D;
+}
+
+.list {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    height: 440px;
+    overflow: auto;
+    scroll-snap-type: y mandatory;
+    justify-content: flex-start;
+}
+
+.equip-list {
+    height: 440px;
+}
+
+.clients-list {
+    height: 145px;
+    width: 400px;
+}
+
+.card {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    flex-basis: calc(33.33% - 20px);
+    background-color: #0F0F0F;
+    color: #F8F10D;
+    padding: 10px;
+    border: 1px solid #F8F10D;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.list::-webkit-scrollbar {
+    width: 10px;
+}
+
+.list::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+}
+
+.list::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
+.button {
+    text-decoration: none;
+    background-color: #F8F10D;
+    color: #0F0F0F;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+
+.button:hover {
+    background-color: #0F0F0F;
+    color: #F8F10D;
+    border: 1px solid #F8F10D;
+}
+
+.clients-statistics, .geral-statistics {
+    padding: 10px;
 }

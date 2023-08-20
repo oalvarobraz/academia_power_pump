@@ -113,7 +113,6 @@ h1 {
 
 }
 
-/* Define a formatação do botão de criar aula quando o cursor do mouse estiver sobre ele */
 .delete-button:hover {
   background-color: #0F0F0F;
   color: #AB0011;
@@ -121,22 +120,19 @@ h1 {
 }
 
 .lessons-list {
-  max-height: 400px; /* Set a maximum height for the lessons container */
-  overflow-y: auto; /* Add a scrollbar when the content exceeds the max height */
+  max-height: 400px; 
+  overflow-y: auto; 
 }
 
-/* Estilizando a barra de rolagem */
 .lessons-list::-webkit-scrollbar {
   width: 10px;
 }
 
-/* Estilizando o thumb (a alça) da barra de rolagem */
 .lessons-list::-webkit-scrollbar-thumb {
   background-color: #888;
   border-radius: 5px;
 }
 
-/* Estilizando a parte da barra de rolagem que não é o thumb */
 .lessons-list::-webkit-scrollbar-track {
   background-color: #f1f1f1;
   border-radius: 5px;

@@ -24,10 +24,39 @@ function formatTime(timeString) {
   return `${hours}:${minutes}`;
 }
 
+// Função para calcular o total de ganhos
+function calculateTotalEarnings(clients) {
+  const monthlyFee = 100;
+  const activeClients = clients.filter(client => client.isPaid);
+  const totalEarnings = monthlyFee * activeClients.length;
+  return totalEarnings;
+}
+
 // pagina inicial de dashboard
 router.get('/dashboard/home', authMiddleware(['admin', 'personal']), async (req, res) => {
   try {
-    res.render('dashboard');
+    const lessons = await Lesson.getAll();
+    const simplifiedLessons = lessons.map(lesson => {
+      return {
+        _id: lesson._id,
+        title: lesson.title,
+        description: lesson.description,
+        data: formatDate(lesson.data),
+        time: formatTime(lesson.time),
+        personal: lesson.personal,
+      };
+    });
+
+    const filterequipments = await Equipment.getAllFilterEquipments({ quality: 'defective' });
+    const numerOfPersonals = (await PersonalTrainer.getAllPersonals()).length;
+    const filterclients = await Client.getAllFilterClients({ isPaid: false });
+    const clients = await Client.getAllClients();
+    const totalEarnings = calculateTotalEarnings(clients);
+    const totalclients = (await Client.getAllClients()).length;
+    const activeClients = await Client.getAllFilterClients({ isPaid: true });
+    const totalclientsative = activeClients.length;
+
+    res.render('dashboard', { data: simplifiedLessons, equip: filterequipments, numberOfPersonals: numerOfPersonals, clients: filterclients, earned: totalEarnings, totalClients: totalclients, totalClientsAtivos: totalclientsative });
   } catch (error) {
     console.log(error);
     //res.status(500).json({ error: 'Internal server error' });
@@ -95,7 +124,8 @@ router.get('/lesson/edit/:id', authMiddleware(['admin', 'personal']), async(req,
   const lessonId = req.params.id;
   try {
     const lesson = await Lesson.getLessonById(lessonId);
-    res.render('edit_lessons', {lesson});
+    const personals = await PersonalTrainer.getAllPersonals();
+    res.render('edit_lessons', {lesson, data: personals});
   } catch (error) {
     //res.status(500).json({error: 'Internal server error'});
     return res.render('tela_error', {code: 500, error: 'Internal server error' });
@@ -350,8 +380,8 @@ router.post('/clients', authMiddleware(['admin']), async (req, res) => {
 
 // Route to render the edit form for a client
 router.get('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
-  const clientId = req.params.id;
   try {
+    const clientId = req.params.id;
     const client = await Client.getClientById(clientId);
     res.render('edit_client', { client });
   } catch (error) {
@@ -360,6 +390,7 @@ router.get('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
     return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
+
 
 // Update an existing client
 router.put('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
@@ -381,6 +412,7 @@ router.put('/client/edit/:id', authMiddleware(['admin']), async (req, res) => {
     return res.render('tela_error', {code: 500, error: 'Internal server error' });
   }
 });
+
 
 // Excluir um cliente
 router.delete('/clients/:id', authMiddleware(['admin']), async (req, res) => {

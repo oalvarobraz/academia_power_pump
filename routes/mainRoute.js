@@ -4,6 +4,7 @@ const Lesson = require('../models/Lesson');
 const PersonalTrainer = require('../models/PersonalTrainer');
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
+const Workout = require('../models/Workout');
 const bcrypt = require('bcrypt');
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -40,8 +41,8 @@ router.get('/', async (req, res) => {
       });
       res.render('main_page', { data: simplifiedLessons });
     } catch (error) {
-      //res.status(500).json({ error: 'Internal server error' });
-      return res.render('tela_error', {code: 500, error: 'Internal server error' });
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
     }
 });
 
@@ -75,33 +76,60 @@ router.get('/login', async (req, res) => {
 
 // Recebe os dados de login
 router.post('/login', async (req, res) => {
-    try {
-      const { username, password } = req.body;
-      const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
-      // Verifica se os dados estão corretos
-      if (username === admlogin.username && password === admlogin.password) {
-        const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/dashboard/home');
-      } else {
-        const personal = await PersonalTrainer.getPersonalUser(username);
-        if(!personal) {
-          return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
-        }
-        const isPasswordValid = await bcrypt.compare(password, personal.password);
-        if(!isPasswordValid) {
-          //return res.status(401).json( { message: 'Invalid credentials' } );
-          return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
-        }
-        const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
-        res.cookie('token', token, { httpOnly: true });
-        res.redirect('/dashboard/home');
-      }  
-    } catch (error) {
-      //console.log(error);
-      //res.status(500).json({ error: 'Internal server error' });
-      return res.render('tela_error', {code: 500, error: 'Internal server error' });
+  try {
+    const { username, password } = req.body;
+    const admlogin = new Admin(process.env.ADM_USER, process.env.ADM_PASS);
+    // Verifica se os dados estão corretos
+    if (username === admlogin.username && password === admlogin.password) {
+      const token = jwt.sign({ userId: username, role: 'admin' }, jwtSecret);
+      res.cookie('token', token, { httpOnly: true });
+      res.redirect('/dashboard/home');
+    } else {
+      const personal = await PersonalTrainer.getPersonalUser(username);
+      if(!personal) {
+        return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
+      }
+      const isPasswordValid = await bcrypt.compare(password, personal.password);
+      if(!isPasswordValid) {
+        //return res.status(401).json( { message: 'Invalid credentials' } );
+        return res.render('tela_error', {code: 401, error: 'Credenciais inválidas' });
+      }
+      const token = jwt.sign({ userId: username, role: 'personal' }, jwtSecret);
+      res.cookie('token', token, { httpOnly: true });
+      res.redirect('/dashboard/home');
+    }  
+  } catch (error) {
+    //console.log(error);
+    //res.status(500).json({ error: 'Internal server error' });
+    return res.render('tela_error', {code: 500, error: 'Internal server error' });
+  }
+});
+
+router.get('/search_exercise', async (req, res) => {
+  try {
+    const { cpf } = req.query;
+    if (!cpf) {
+      return res.render('tela_error', { code: 400, error: 'CPF parameter is required' });
     }
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+
+    const daysOfWeekNames = [
+      'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'
+    ];
+    const dayName = daysOfWeekNames[dayOfWeek];
+    //console.log('Dia da semana: ', dayName);
+    const workout = await Workout.findExistingWorkoutbyCPF(cpf, dayName);
+
+    if (workout) {
+      return res.render('client_workout', { workout: workout });
+    } else {
+      return res.render('tela_error', { code: 404, error: 'Workout not found for today' });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.render('tela_error', { code: 500, error: 'Internal server error' });
+  }
 });
 
 // Termina a seção de login do administrador

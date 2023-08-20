@@ -42,7 +42,7 @@ form label {
 /* Define a formatação dos campos de entrada de texto (input[type="text"]) e áreas de texto (textarea) no formulário */
 form input[type="text"],
 form textarea {
-  width: 100%; /* Define que os campos ocuparão 100% da largura disponível */
+  width: 95%; /* Define que os campos ocuparão 100% da largura disponível */
   padding: 10px; /* Define o espaçamento interno dos campos */
   margin-bottom: 20px; /* Define o espaçamento inferior dos campos */
   border: 1px solid #ccc; /* Define uma borda de 1px sólida de cor cinza (#ccc) */

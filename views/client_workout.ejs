@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Workout</title>
+    <link rel="stylesheet" href="/public/css/style_client_workout.css">
+</head>
+<body>
+    <div class="workout-card">
+        <h1 class="workout-title"><%= workout.dayOfWeek %></h1>
+        <p class="workout-description"><strong>Descrição:</strong> <%= workout.description %></p>
+        <% if (workout.selectedEquipment && workout.selectedEquipment.length > 0) { %>
+            <div class="workout-equipment">
+                <% workout.selectedEquipment.forEach(equipment => { %>
+                    <div class="equipment-box">
+                        <p class="equipment-info"><strong>Nome:</strong> <%= equipment.name %></p>
+                        <p class="equipment-info"><strong>Descrição:</strong> <%= equipment.description %></p>
+                        <p class="equipment-info"><strong>Repetições:</strong> <%= workout.repetitions %></p>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
