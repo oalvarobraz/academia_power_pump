@@ -1,0 +1,193 @@
+
+body {
+  background-color:#22221F;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.topo{
+  display :flex;
+  justify-items: flex-start;
+  align-items: start;
+}
+.conteudo-abaixo{
+ position: absolute;
+ top: 30%;
+ left: 30%;
+ color: #FAF000;
+
+}
+.topo-conteudo{
+ position: absolute;
+ top: 9%;
+ left: 14%;
+}
+.topo h2{
+  color: white;
+  margin-bottom: 5px;
+}
+.topo p{
+  color: white;
+  margin: 0;
+  
+}
+img {
+  max-width: 200px; /* Define a largura máxima para a imagem */
+  height: auto; /* Mantém a proporção da imagem */
+  display: block; /* Remove margens indesejadas */
+  margin: 0 auto; /* Centraliza horizontalmente */
+  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.geral-pesquisa{
+  position: absolute;
+  top: 9%;
+  left: 60%;
+}
+.aulas{
+  color: #FAF000;
+}
+.search-container {
+  text-align: center;
+}
+
+#search-input {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#search-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #cfc908;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#search-button:hover {
+  background-color: #000000;
+}
+
+
+
+/* area de estilização do banco de daodos */
+
+
+
+.container-geral {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+  max-width: 100%;
+}
+.carousel-container {
+
+  width: 50%;
+  overflow: hidden;
+  
+}
+
+.json-item {
+  display: none;
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  
+
+}
+
+.json-item  h2 {
+  font-size: 35px;
+  color: #FAF000;
+  margin: 0;
+  padding: 2px;
+}
+
+.json-item p {
+  font-size: 40px;
+  margin: 10px 0;
+  color: rgb(0, 0, 0);
+  font-size: 18px;
+  padding: 2px;
+}
+
+
+
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.carousel-indicator {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+
+}
+
+.carousel-indicator.active {
+  background-color: #FAF000;
+}
+.carousel-indicator :hover {
+  background-color: #d5d815;
+}
+
+
+.json-item.active {
+  display: block;
+
+}
+
+
+.carousel-button-next-button {
+  position: absolute;
+  left: 70%;
+  top: 60%;
+  transform: translateY(-40%);
+  font-size: 24px;
+  background-color: rgb(255, 255, 255); /* Fundo transparente */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.5s;
+  padding: 5px 5px;
+  border-radius: 10%;
+}
+
+.carousel-button-next-button:hover {
+  background-color: #FAF000;
+}
+.carousel-button-previous-button {
+  position: absolute;
+  left: 28%;
+  top: 60%;
+  transform: translateY(-40%);
+  font-size: 24px;
+  background-color: rgb(255, 255, 255); /* Fundo transparente */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.5s;
+  padding: 5px 5px;
+  border-radius: 10%;
+}
+
+.carousel-button-previous-button:hover {
+  background-color: #FAF000;
+}
+
+
+
+
