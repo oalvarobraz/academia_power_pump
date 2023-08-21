@@ -5,25 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Display</title>
-    <link rel="stylesheet" href="/public/style_login.css"/>
-    <style>
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh; /* Altura mínima de 100% da altura da janela de visualização */
-        background: #ffffff;
-    }
-    </style>
+    <link rel="stylesheet" href="/public/css/style_usuario.css"/>
+    <link rel="stylesheet" type="text/css" href="/public/js/script.js">
+   
+
 </head>
 <body>
-    <form action="/search_exercise" method="GET">
-        <label for="cpf">Search by CPF:</label>
-        <input type="text" id="cpf" name="cpf" placeholder="Enter client CPF" required>
-        <button type="submit">Search</button>
-    </form>
 
-    <div id="json-container">
+    <div class="topo">
+        <a id="logo" href=""><img src="/public/imgs/logo-png.png" alt=""></a>
+        <div class="topo-conteudo">  
+           <h2> Academia </h2>
+            <p>Power Pumb</p>
+        </div>
+    </div>
+    <div class="geral-pesquisa">
+      <div class="aulas"> <h2>Minhas aulas </h2></div>
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Digite seu ID">
+        <button id="search-button">Pesquisar</button>
+      </div>
+      <div class="pesquisa"> </div>
+    </div>
+
+    
+
+
+    <div class="conteudo-abaixo"><h2> Aulas do dia</h2></div>
+
+
+    <div class="container-geral">  
+      <div id="json-carousel" class="carousel-container">
         <% data.forEach(item => { %>
             <div class="json-item">
                 <h2><%= item.title %></h2>
@@ -32,9 +44,14 @@
                 <p>Hora: <%= item.time %></p>
                 <p>Treinador: <%= item.personal.name %></p>
             </div>
-        <% }); %>
-    </div>
+          <% }); %>
+        <div class="carousel-indicators" id="indicators"></div>
+      </div>
+  
 
-    
+
+<script src="/public/js/script.js">
+
+</script>
 </body>
 </html>
